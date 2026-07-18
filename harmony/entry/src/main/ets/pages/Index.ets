@@ -13,10 +13,10 @@ import { common } from '@kit.AbilityKit'
 
 const TAG = 'FishNoteShell'
 
-/** 保存 base64 内容到用户选择的位置（DocumentSaverPicker） */
+/** 保存 base64 内容到用户选择的位置（DocumentViewPicker.save） */
 async function saveToUserFile(context: common.Context, filename: string, base64: string): Promise<void> {
   try {
-    const saverPicker = new picker.DocumentSaverPicker(context)
+    const saverPicker = new picker.DocumentViewPicker(context)
     const opt = new picker.DocumentSaveOptions()
     opt.newFileNames = [filename]
     const uris = await saverPicker.save(opt)
@@ -34,17 +34,18 @@ async function saveToUserFile(context: common.Context, filename: string, base64:
   }
 }
 
+/** 壳侧持有的 UIAbility 上下文（javaScriptProxy 注册对象禁止声明属性，故置于模块级） */
+let shellContext: common.Context | undefined = undefined
+
 /** 注入到网页 window.fishNoteShell 的原生桥（只声明方法，不声明属性） */
 class FishNoteShell {
-  private context: common.Context
-
-  constructor(context: common.Context) {
-    this.context = context
-  }
-
   saveFile(filename: string, base64: string): void {
     // 同步方法内发起异步保存，避免阻塞 Web 渲染
-    saveToUserFile(this.context, filename, base64)
+    if (shellContext) {
+      saveToUserFile(shellContext, filename, base64)
+    } else {
+      hilog.error(0x0000, TAG, 'saveFile: shellContext not ready')
+    }
   }
 }
 
@@ -52,7 +53,11 @@ class FishNoteShell {
 @Component
 struct Index {
   controller: webview.WebviewController = new webview.WebviewController()
-  private shell: FishNoteShell = new FishNoteShell(getContext(this))
+  private shell: FishNoteShell = new FishNoteShell()
+
+  aboutToAppear(): void {
+    shellContext = getContext(this) as common.Context
+  }
 
   /** 接管网页文件选择：拉起系统文档选择器，过滤 .json 备份 */
   private async pickFile(event: OnShowFileSelectorEvent): Promise<void> {

@@ -243,10 +243,10 @@ import { common } from '@kit.AbilityKit'
 
 const TAG = 'FishNoteShell'
 
-/** 保存 base64 内容到用户选择的位置（DocumentSaverPicker） */
+/** 保存 base64 内容到用户选择的位置（DocumentViewPicker.save） */
 async function saveToUserFile(context: common.Context, filename: string, base64: string): Promise<void> {
   try {
-    const saverPicker = new picker.DocumentSaverPicker(context)
+    const saverPicker = new picker.DocumentViewPicker(context)
     const opt = new picker.DocumentSaveOptions()
     opt.newFileNames = [filename]
     const uris = await saverPicker.save(opt)
@@ -264,17 +264,18 @@ async function saveToUserFile(context: common.Context, filename: string, base64:
   }
 }
 
+/** 壳侧持有的 UIAbility 上下文（javaScriptProxy 注册对象禁止声明属性，故置于模块级） */
+let shellContext: common.Context | undefined = undefined
+
 /** 注入到网页 window.fishNoteShell 的原生桥（只声明方法，不声明属性） */
 class FishNoteShell {
-  private context: common.Context
-
-  constructor(context: common.Context) {
-    this.context = context
-  }
-
   saveFile(filename: string, base64: string): void {
     // 同步方法内发起异步保存，避免阻塞 Web 渲染
-    saveToUserFile(this.context, filename, base64)
+    if (shellContext) {
+      saveToUserFile(shellContext, filename, base64)
+    } else {
+      hilog.error(0x0000, TAG, 'saveFile: shellContext not ready')
+    }
   }
 }
 
@@ -282,7 +283,11 @@ class FishNoteShell {
 @Component
 struct Index {
   controller: webview.WebviewController = new webview.WebviewController()
-  private shell: FishNoteShell = new FishNoteShell(getContext(this))
+  private shell: FishNoteShell = new FishNoteShell()
+
+  aboutToAppear(): void {
+    shellContext = getContext(this) as common.Context
+  }
 
   /** 接管网页文件选择：拉起系统文档选择器，过滤 .json 备份 */
   private async pickFile(event: OnShowFileSelectorEvent): Promise<void> {
@@ -427,6 +432,8 @@ Expected: 应用「拾光便签」在鸿蒙 PC 启动并显示首页工作台。
 7. 深色主题切换正常
 8. （可选，有 API Key 时）设置 AI 供应商为 OpenAI 兼容，回忆书提问收到流式回答
 9. 导出 Markdown zip：保存成功且 zip 可解压
+10. 数据量较大时导出 Markdown zip（验证 javaScriptProxy 跨进程传输大 base64 字符串无截断）
+11. 导出时在系统保存框点「取消」：应用正常继续，无崩溃/卡死（静默返回可接受）
 
 - [ ] **Step 4: 记录结果**
 
