@@ -36,7 +36,35 @@ function formatBytes(n: number): string {
   return `${(n / 1024).toFixed(1)} KB`
 }
 
-function downloadBlob(filename: string, blob: Blob) {
+/** 鸿蒙壳注入的原生桥（见 harmony/entry/src/main/ets/pages/Index.ets） */
+interface FishNoteShell {
+  saveFile: (filename: string, base64: string) => void
+}
+
+declare global {
+  interface Window {
+    fishNoteShell?: FishNoteShell
+  }
+}
+
+function blobToBase64(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => {
+      const dataUrl = reader.result as string
+      resolve(dataUrl.slice(dataUrl.indexOf(',') + 1)) // 去掉 data:*;base64, 前缀
+    }
+    reader.onerror = () => reject(reader.error)
+    reader.readAsDataURL(blob)
+  })
+}
+
+async function downloadBlob(filename: string, blob: Blob) {
+  // 鸿蒙 ArkWeb 壳内 <a download> 不可用，走原生桥保存
+  if (window.fishNoteShell?.saveFile) {
+    window.fishNoteShell.saveFile(filename, await blobToBase64(blob))
+    return
+  }
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
   a.href = url
@@ -132,7 +160,7 @@ export default function DataSection() {
         localPrefs: loadLocalPrefs(),
       },
     }
-    downloadBlob(
+    void downloadBlob(
       `shiguang-backup-${format(new Date(), 'yyyyMMdd')}.json`,
       new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' }),
     )
@@ -148,7 +176,7 @@ export default function DataSection() {
       zip.file(`${KIND_DIR[n.kind]}/${safe}.md`, header + n.contentMarkdown)
     }
     const blob = await zip.generateAsync({ type: 'blob' })
-    downloadBlob(`shiguang-notes-${format(new Date(), 'yyyyMMdd')}.zip`, blob)
+    await downloadBlob(`shiguang-notes-${format(new Date(), 'yyyyMMdd')}.zip`, blob)
     notify.success(`已导出 ${live.length} 条便签（Markdown 打包）`)
   }
 
@@ -211,7 +239,11 @@ export default function DataSection() {
         localStorage.removeItem(key)
       }
       notify.success('数据已清空')
-      setTimeout(() => location.assign('/'), 400)
+      // hash 路由复位到首页后整页重载；resource:// 与浏览器下均正确
+      setTimeout(() => {
+        location.hash = '#/'
+        location.reload()
+      }, 400)
     }, 600)
   }
 
