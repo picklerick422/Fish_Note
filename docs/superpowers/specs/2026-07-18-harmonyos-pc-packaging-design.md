@@ -51,7 +51,7 @@ Fish_note/
   - `.javaScriptAccess(true)`
   - `.zoomAccess(false)` — 桌面应用禁手势缩放
 - **导入（文件选择）**：`onShowFileSelector` 事件 → 拉起 `DocumentViewPicker`（@ohos.file.picker）过滤 `.json`（备份文件为 JSON；zip 仅是 Markdown 导出格式，不可回导）→ 选中 uri 交还 `FileSelectorResult.handleFileList()`，Web 端 `<input type="file">` 无感知
-- **导出（文件保存）**：`javaScriptProxy` 注入 `fishNoteShell.saveFile(name, base64)` → 壳用 `DocumentSaverPicker` 让用户选保存位置 → `@ohos.file.fs` 写入。
+- **导出（文件保存）**：`javaScriptProxy` 注入 `fishNoteShell.saveFile(name, base64)` → 壳用 `DocumentViewPicker.save()` 让用户选保存位置 → `@ohos.file.fs` 写入。
   - 决策：选 JS Bridge 而非 `WebDownloadDelegate`，因 blob: URL 在 ArkWeb 下载代理中的行为文档未明确，桥方案确定可行
 - `onErrorReceive` 记 hilog（资源内置包内，加载失败即打包错误，无需 UI 兜底）
 
@@ -93,7 +93,7 @@ Fish_note/
 2. 六页面导航（含 `g+h/n/m/r/s` 快捷键）
 3. 便签增删改；**杀进程重开数据仍在**（验证 domStorageAccess 持久化）
 4. mock AI 流式输出（快速记录 → 结构化）
-5. 导出 JSON 备份与 Markdown zip（DocumentSaverPicker）、导入 JSON 备份（DocumentViewPicker）
+5. 导出 JSON 备份与 Markdown zip（DocumentViewPicker.save）、导入 JSON 备份（DocumentViewPicker.select）
 6. 深色主题切换
 7. （可选）设置中填 OpenAI 兼容 API 验证联网
 
