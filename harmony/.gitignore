@@ -1,0 +1,11 @@
+/oh_modules
+/local.properties
+**/build
+/.hvigor
+.cxx
+/.clangd
+/.clang-format
+/.clang-tidy
+**/.test
+/.appanalyzer
+/.bitfun

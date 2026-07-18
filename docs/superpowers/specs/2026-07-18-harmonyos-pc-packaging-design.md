@@ -21,7 +21,7 @@ Fish_note/
 ├── app/                        # 现有 React 应用（结构不动）
 ├── harmony/                    # DevEco 工程（新增，DevEco Studio 打开此目录）
 │   ├── AppScope/
-│   │   ├── app.json5           # bundleName: com.fishnote.springnote
+│   │   ├── app.json5           # bundleName: com.fishnote.app
 │   │   └── resources/          # 应用名「拾光便签」、图标
 │   ├── entry/src/main/
 │   │   ├── ets/entryability/EntryAbility.ets
@@ -62,7 +62,7 @@ Fish_note/
 ### 配置
 
 - `module.json5`：`deviceTypes: ["2in1", "tablet"]`；`requestPermissions: [ohos.permission.INTERNET]`（OpenAI 兼容 API 用）
-- `app.json5`：`bundleName: com.fishnote.springnote`；应用显示名「拾光便签」
+- `app.json5`：`bundleName: com.fishnote.app`（用户建工程时实际选定值）；应用显示名「拾光便签」
 
 ## 5. 构建与安装流程
 
@@ -110,4 +110,4 @@ Fish_note/
 - 只做鸿蒙 PC，放弃 Electron（用户选择）
 - 方案 A：rawfile 内置壳（用户选择）
 - DevEco 直连自动签名安装（用户选择）
-- bundleName `com.fishnote.springnote`、应用名「拾光便签」、deviceTypes 含 tablet（用户确认默认值）
+- bundleName `com.fishnote.app`（建工程时实际选定）、应用名「拾光便签」、deviceTypes 含 tablet（用户确认默认值）

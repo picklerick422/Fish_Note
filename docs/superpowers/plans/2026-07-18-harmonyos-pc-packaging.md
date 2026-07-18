@@ -158,7 +158,7 @@ DevEco Studio → File → New → Create Project → **Empty Ability**，参数
 | 项 | 值 |
 |---|---|
 | Project name | `harmony` |
-| Bundle name | `com.fishnote.springnote` |
+| Bundle name | `com.fishnote.app`（实际选定值） |
 | Save location | `<仓库根>/Fish_note/harmony` |
 | Module name | `entry`（默认） |
 | Device type | 勾选 **2in1** 与 **tablet** |
