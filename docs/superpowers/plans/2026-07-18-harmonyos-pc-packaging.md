@@ -241,11 +241,14 @@ import { BusinessError } from '@kit.BasicServicesKit'
 import { hilog } from '@kit.PerformanceAnalysisKit'
 import { common } from '@kit.AbilityKit'
 
+const DOMAIN = 0x0000
 const TAG = 'FishNoteShell'
 
 /** 保存 base64 内容到用户选择的位置（DocumentViewPicker.save） */
 async function saveToUserFile(context: common.Context, filename: string, base64: string): Promise<void> {
   try {
+    // 先解码：非法 base64 直接失败，不拉起保存框、不残留空文件
+    const data = new util.Base64Helper().decodeSync(base64)
     const saverPicker = new picker.DocumentViewPicker(context)
     const opt = new picker.DocumentSaveOptions()
     opt.newFileNames = [filename]
@@ -253,14 +256,16 @@ async function saveToUserFile(context: common.Context, filename: string, base64:
     if (!uris || uris.length === 0) {
       return // 用户取消
     }
-    const data = new util.Base64Helper().decodeSync(base64)
     const file = fs.openSync(uris[0], fs.OpenMode.READ_WRITE | fs.OpenMode.CREATE | fs.OpenMode.TRUNC)
-    fs.writeSync(file.fd, data.buffer)
-    fs.closeSync(file)
-    hilog.info(0x0000, TAG, `saved ${filename}, ${data.length} bytes`)
+    try {
+      fs.writeSync(file.fd, data.buffer)
+    } finally {
+      fs.closeSync(file)
+    }
+    hilog.info(DOMAIN, TAG, 'saved %{public}s, %{public}d bytes', filename, data.length)
   } catch (e) {
     const err = e as BusinessError
-    hilog.error(0x0000, TAG, `saveFile failed: ${err.code} ${err.message}`)
+    hilog.error(DOMAIN, TAG, 'saveFile failed: %{public}d %{public}s', err.code, err.message)
   }
 }
 
@@ -274,7 +279,7 @@ class FishNoteShell {
     if (shellContext) {
       saveToUserFile(shellContext, filename, base64)
     } else {
-      hilog.error(0x0000, TAG, 'saveFile: shellContext not ready')
+      hilog.error(DOMAIN, TAG, 'saveFile: shellContext not ready')
     }
   }
 }
@@ -286,13 +291,18 @@ struct Index {
   private shell: FishNoteShell = new FishNoteShell()
 
   aboutToAppear(): void {
-    shellContext = getContext(this) as common.Context
+    // getContext(this) 自 API 18 废弃，改用 UIContext.getHostContext
+    shellContext = this.getUIContext().getHostContext()
   }
 
   /** 接管网页文件选择：拉起系统文档选择器，过滤 .json 备份 */
   private async pickFile(event: OnShowFileSelectorEvent): Promise<void> {
     try {
-      const viewPicker = new picker.DocumentViewPicker(getContext(this))
+      if (!shellContext) {
+        event.result.handleFileList([])
+        return
+      }
+      const viewPicker = new picker.DocumentViewPicker(shellContext)
       const opt = new picker.DocumentSelectOptions()
       opt.maxSelectNumber = 1
       opt.fileSuffixFilters = ['备份 JSON|.json']
@@ -300,7 +310,7 @@ struct Index {
       event.result.handleFileList(uris ?? [])
     } catch (e) {
       const err = e as BusinessError
-      hilog.error(0x0000, TAG, `pickFile failed: ${err.code} ${err.message}`)
+      hilog.error(DOMAIN, TAG, 'pickFile failed: %{public}d %{public}s', err.code, err.message)
       event.result.handleFileList([])
     }
   }
@@ -311,6 +321,7 @@ struct Index {
         .domStorageAccess(true) // localStorage 持久化（默认 false，必须开启）
         .javaScriptAccess(true)
         .zoomAccess(false) // 桌面应用禁用手势缩放
+        // 单常驻页面、Web 组件与进程同生命周期，故豁免 deleteJavaScriptRegister 反注册
         .javaScriptProxy({
           object: this.shell,
           name: 'fishNoteShell',
@@ -318,15 +329,16 @@ struct Index {
           controller: this.controller,
         })
         .onShowFileSelector((event) => {
-          if (event) {
-            this.pickFile(event)
+          if (!event) {
+            return false // 无事件对象时交还系统默认处理，避免 input 挂起
           }
+          this.pickFile(event)
           return true // 返回 true 表示应用接管文件选择
         })
         .onErrorReceive((event) => {
           if (event) {
-            hilog.error(0x0000, TAG,
-              `load error: ${event.error.getErrorCode()} ${event.error.getErrorInfo()}`)
+            hilog.error(DOMAIN, TAG, 'load error: %{public}d %{public}s',
+              event.error.getErrorCode(), event.error.getErrorInfo())
           }
         })
         .width('100%')
