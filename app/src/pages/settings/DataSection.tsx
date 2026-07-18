@@ -62,7 +62,11 @@ function blobToBase64(blob: Blob): Promise<string> {
 async function downloadBlob(filename: string, blob: Blob) {
   // 鸿蒙 ArkWeb 壳内 <a download> 不可用，走原生桥保存
   if (window.fishNoteShell?.saveFile) {
-    window.fishNoteShell.saveFile(filename, await blobToBase64(blob))
+    try {
+      window.fishNoteShell.saveFile(filename, await blobToBase64(blob))
+    } catch {
+      notify.error('保存文件失败')
+    }
     return
   }
   const url = URL.createObjectURL(blob)
