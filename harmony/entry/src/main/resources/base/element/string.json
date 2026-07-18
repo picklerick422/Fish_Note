@@ -2,15 +2,15 @@
   "string": [
     {
       "name": "module_desc",
-      "value": "module description"
+      "value": "拾光便签主模块"
     },
     {
       "name": "EntryAbility_desc",
-      "value": "description"
+      "value": "拾光便签 — AI 智能便签"
     },
     {
       "name": "EntryAbility_label",
-      "value": "label"
+      "value": "拾光便签"
     }
   ]
 }

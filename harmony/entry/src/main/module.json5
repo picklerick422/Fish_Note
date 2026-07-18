@@ -5,7 +5,14 @@
     "description": "$string:module_desc",
     "mainElement": "EntryAbility",
     "deviceTypes": [
-      "2in1"
+      "2in1",
+      "tablet"
+    ],
+    "requestPermissions": [
+      {
+        // OpenAI 兼容 API 联网（system_grant，无需弹窗）；内置 mock 引擎不联网
+        "name": "ohos.permission.INTERNET"
+      }
     ],
     "deliveryWithInstall": true,
     "installationFree": false,
