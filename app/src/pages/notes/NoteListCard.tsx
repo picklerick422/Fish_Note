@@ -26,20 +26,17 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { relTime, wordCount } from '@/lib/date'
+import { downloadBlob } from '@/lib/download'
 import { notify } from '@/lib/toast'
 import { cn } from '@/lib/utils'
 import { useNotesStore } from '@/store/useNotesStore'
 import type { Note } from '@/types'
 import { NOTE_COLORS, colorBg, plainExcerpt } from './constants'
 
-/** 导出 .md 文件 */
+/** 导出 .md 文件（统一走 lib/download：鸿蒙壳内自动切原生桥） */
 export function exportNoteMd(note: Note) {
   const blob = new Blob([note.contentMarkdown], { type: 'text/markdown;charset=utf-8' })
-  const a = document.createElement('a')
-  a.href = URL.createObjectURL(blob)
-  a.download = `${note.title.replace(/[\\/:*?"<>|]/g, '_') || '便签'}.md`
-  a.click()
-  URL.revokeObjectURL(a.href)
+  void downloadBlob(`${note.title.replace(/[\\/:*?"<>|]/g, '_') || '便签'}.md`, blob)
   notify.success(`已导出「${note.title}」`)
 }
 

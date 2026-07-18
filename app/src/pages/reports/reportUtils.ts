@@ -13,6 +13,7 @@ import {
   subMonths,
   subWeeks,
 } from 'date-fns'
+import { downloadBlob } from '@/lib/download'
 import type { Note, NoteKind, ReportType } from '@/types'
 import type { TagType } from '@/components/shared/Tag'
 
@@ -196,16 +197,9 @@ export const fmtNum = (n: number) => n.toLocaleString('en-US')
 
 /* ---------------- 导出 ---------------- */
 
-/** 浏览器下载 .md 文件 */
+/** 下载 .md 文件（统一走 lib/download：鸿蒙壳内自动切原生桥） */
 export function downloadMarkdown(title: string, markdown: string) {
   const safe = title.replace(/[\\/:*?"<>|\s]+/g, '')
   const blob = new Blob([markdown], { type: 'text/markdown;charset=utf-8' })
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = `${safe || '报告'}.md`
-  document.body.appendChild(a)
-  a.click()
-  document.body.removeChild(a)
-  URL.revokeObjectURL(url)
+  void downloadBlob(`${safe || '报告'}.md`, blob)
 }
