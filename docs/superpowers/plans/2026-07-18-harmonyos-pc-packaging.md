@@ -4,9 +4,9 @@
 
 **Goal:** 将 `app/` React 便签应用封装为鸿蒙 PC（2in1）原生应用：ArkTS + ArkWeb 壳加载 rawfile 内置 Web 产物。
 
-**Architecture:** 单仓库双工程。`app/` 做 2 处适配（HashRouter、downloadBlob 桥接）；新增 `harmony/` DevEco 工程，`Index.ets` 用 Web 组件加载 `resource://rawfile/webapp/index.html`，通过 `javaScriptProxy` 提供文件保存桥、`onShowFileSelector` 接管文件选择；`scripts/sync-webapp.sh` 单向同步构建产物。
+**Architecture:** 单仓库双工程。`app/` 做 3 处适配（HashRouter、`lib/download` 共享桥出口、doReset hash 跳转）；新增 `harmony/` DevEco 工程，`Index.ets` 用 Web 组件加载 `resource://rawfile/webapp/index.html`，通过 `javaScriptProxy` 提供文件保存桥、`onShowFileSelector` 接管文件选择；`scripts/sync-webapp.sh` 单向同步构建产物。
 
-**Tech Stack:** React 19 + Vite 7（现有）；ArkTS / ArkWeb / @ohos.file.picker / @ohos.file.fs / @ohos.util（API 9-10 即可，任意近期 DevEco SDK 均满足）。
+**Tech Stack:** React 19 + Vite 7（现有）；ArkTS / ArkWeb / @ohos.file.picker / @ohos.file.fs / @ohos.util（compatibleSdkVersion 6.1.0(23)，DevEco 默认；代码 API 下限为 12——getUIContext().getHostContext()）。
 
 **Spec:** `docs/superpowers/specs/2026-07-18-harmonyos-pc-packaging-design.md`
 
@@ -446,6 +446,10 @@ Expected: 应用「拾光便签」在鸿蒙 PC 启动并显示首页工作台。
 9. 导出 Markdown zip：保存成功且 zip 可解压
 10. 数据量较大时导出 Markdown zip（验证 javaScriptProxy 跨进程传输大 base64 字符串无截断）
 11. 导出时在系统保存框点「取消」：应用正常继续，无崩溃/卡死（静默返回可接受）
+12. 设置 → 危险区「清空数据」：回到 `#/` 首页并重载，业务数据清空、外观与 AI 设置保留
+13. 嵌套 hash 深链：首页问候横幅 → 统计页热力图定位（`/stats#heatmap`）；便签页「配置 AI」→ 设置页 AI 节定位（`/settings#ai`）
+14. 报告卡片「导出 Markdown」、便签右键「导出 .md」：各走一遍系统保存框并核对文件内容
+15. （可选）拖拽 .json 到导入区（PC 拖入 ArkWeb 行为未知）；关于页 GitHub 外链点击行为观察（预期无反应，不崩溃即可）
 
 - [ ] **Step 4: 记录结果**
 

@@ -2,7 +2,7 @@
 
 - 日期：2026-07-18
 - 状态：已获用户批准
-- 目标设备：鸿蒙 PC（HarmonyOS 5+，2in1 形态），DevEco Studio 直连自动签名安装（自用）
+- 目标设备：鸿蒙 PC（2in1 形态），DevEco Studio 直连自动签名安装（自用）。SDK 基线：compatibleSdkVersion `6.1.0(23)`（DevEco 默认）——要求设备系统 ≥ HarmonyOS 6.1；若低于此版本需调低（下限 API 12，受 `getUIContext().getHostContext()` 约束）
 
 ## 1. 背景与目标
 
@@ -33,11 +33,11 @@ Fish_note/
 └── scripts/sync-webapp.sh      # 一键：app 构建 → 拷入 rawfile
 ```
 
-## 3. Web 侧改造（共 3 处，其余零改动）
+## 3. Web 侧改造（其余零改动）
 
 1. **`app/src/App.tsx`**：`BrowserRouter` → `HashRouter`（`react-router` 包内直接导出）。原因：`resource://` 协议下无 history 服务，hash 路由是唯一可靠方案；浏览器开发模式不受影响。
-2. **`app/src/pages/settings/DataSection.tsx` 的 `downloadBlob()`**：加环境检测——若存在壳注入的 `window.fishNoteShell`，将 Blob 转 base64 后调 `fishNoteShell.saveFile(filename, base64)`；否则维持现有 `<a download>` 浏览器行为。
-3. **同文件 `doReset()`**：`location.assign('/')` 在 `resource://.../index.html` 下会导航离开应用页面，改为 `location.hash = '#/'` + `location.reload()`（浏览器下行为等价）。
+2. **`app/src/lib/download.ts`（新增共享模块）**：统一下载出口 `downloadBlob(filename, blob)`——若存在壳注入的 `window.fishNoteShell`，将 Blob 转 base64 后调 `fishNoteShell.saveFile(filename, base64)`（失败 `notify.error`）；否则维持 `<a download>` 浏览器行为。全应用三个导出入口统一走它：设置页备份导出（DataSection）、报告导出（reportUtils.downloadMarkdown）、便签右键导出 .md（NoteListCard.exportNoteMd）。（最终评审修正：最初 spec 只清点了 DataSection 一处，漏了后两个入口。）
+3. **`app/src/pages/settings/DataSection.tsx` 的 `doReset()`**：`location.assign('/')` 在 `resource://.../index.html` 下会导航离开应用页面，改为 `location.hash = '#/'` + `location.reload()`（浏览器下行为等价）。
 
 前提已满足、无需改动的项：vite `base: './'`（相对路径）、AI 层（mock 离线可用，OpenAI 走 fetch）。
 
