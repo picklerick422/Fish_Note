@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router'
+import { HashRouter, Navigate, Route, Routes } from 'react-router'
 import { Toaster } from 'sonner'
 import Layout from '@/components/Layout'
 import Home from '@/pages/Home'
@@ -23,7 +23,7 @@ export default function App() {
   }, [theme])
 
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
         <Route element={<Layout />}>
           <Route index element={<Home />} />
@@ -49,6 +49,6 @@ export default function App() {
           },
         }}
       />
-    </BrowserRouter>
+    </HashRouter>
   )
 }
