@@ -48,8 +48,8 @@ export const useSettingsStore = create<SettingsState>()(
       setWelcomed: (welcomed) => set({ welcomed }),
 
       resetAllData: () => {
-        for (const key of ['sg-notes', 'sg-reports', 'sg-chat', 'sg-stats']) {
-          localStorage.removeItem(key)
+        for (const key of Object.keys(localStorage)) {
+          if (key.startsWith('sg-')) localStorage.removeItem(key)
         }
         location.reload()
       },

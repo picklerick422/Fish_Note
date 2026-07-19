@@ -197,18 +197,8 @@ export default function DataSection() {
   const doReset = () => {
     if (resetText !== '确认清空') return
     setResetting(true)
-    setTimeout(() => {
-      // 清空业务数据（便签/报告/对话/统计），保留外观与 AI 设置
-      for (const key of [LS_KEYS.notes, LS_KEYS.reports, LS_KEYS.chat, LS_KEYS.stats]) {
-        localStorage.removeItem(key)
-      }
-      notify.success('数据已清空')
-      // hash 路由复位到首页后整页重载；resource:// 与浏览器下均正确
-      setTimeout(() => {
-        location.hash = '#/'
-        location.reload()
-      }, 400)
-    }, 600)
+    // 统一走 useSettingsStore.resetAllData：按 sg- 前缀清空全部 key 并整页重载
+    setTimeout(() => useSettingsStore.getState().resetAllData(), 600)
   }
 
   const inputCls =

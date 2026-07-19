@@ -56,7 +56,7 @@ npm run preview    # 预览构建产物
 | useUIStore | （不持久化） | 命令面板开关等临时 UI 状态 |
 
 注意：
-- `useSettingsStore.resetAllData()` 硬编码了要清空的 key 列表——新增持久化 store 时必须同步加进去。
+- `useSettingsStore.resetAllData()` 按 `sg-` 前缀清空全部 key，新增持久化 store 只要保持前缀即自动覆盖。
 - `store/seed.ts` 在首次运行（localStorage 为空）时注入示例数据，日期基于安装当天动态生成，热力图用确定性伪随机保证可复现。
 - 所有日期时间统一 ISO 字符串（`new Date().toISOString()`），类型定义集中在 `src/types/index.ts`。
 
