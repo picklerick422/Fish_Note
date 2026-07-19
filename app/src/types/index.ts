@@ -123,6 +123,3 @@ export interface DailyDigest {
 }
 
 export type Theme = 'light' | 'dark'
-
-/** 颜色方案：ocean（海洋蓝，默认）/ green（森林绿） */
-export type ColorScheme = 'ocean' | 'green'

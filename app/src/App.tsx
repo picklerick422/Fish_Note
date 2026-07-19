@@ -12,7 +12,6 @@ import { useSettingsStore } from '@/store/useSettingsStore'
 
 export default function App() {
   const theme = useSettingsStore((s) => s.theme)
-  const colorScheme = useSettingsStore((s) => s.colorScheme)
 
   // 深浅主题切换（.dark class 方案，200ms 颜色过渡）
   useEffect(() => {
@@ -22,11 +21,6 @@ export default function App() {
     const timer = setTimeout(() => root.classList.remove('theme-anim'), 320)
     return () => clearTimeout(timer)
   }, [theme])
-
-  // 颜色方案切换（data-color-scheme 属性）
-  useEffect(() => {
-    document.documentElement.setAttribute('data-color-scheme', colorScheme)
-  }, [colorScheme])
 
   return (
     <HashRouter>
@@ -47,7 +41,7 @@ export default function App() {
         offset={16}
         toastOptions={{
           style: {
-            background: 'rgba(23,26,23,.92)',
+            background: 'rgba(16,20,24,.92)',
             color: '#fff',
             border: 'none',
             borderRadius: '999px',

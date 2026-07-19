@@ -7,25 +7,24 @@ import { useLocalPrefs, type LocalPrefs } from './localPrefs'
 import { SavedFlash, SettingCard, SettingRow, SgSelect, SgSwitch } from './controls'
 
 type ThemeMode = LocalPrefs['themeMode']
-type ColorScheme = 'ocean' | 'green'
 
 /** 96×64 微缩界面预览（CSS 绘制的迷你 UI：侧边条 + 卡片示意） */
-function ThemePreview({ mode, scheme = 'ocean' }: { mode: ThemeMode; scheme?: ColorScheme }) {
+function ThemePreview({ mode }: { mode: ThemeMode }) {
   const light = {
-    bg: '#F4F6F3',
+    bg: '#F5F6F8',
     rail: '#FFFFFF',
     card: '#FFFFFF',
-    line: '#E7EAE4',
-    ink: '#D9DED5',
-    brand: scheme === 'green' ? '#22B462' : '#0EA5E9',
+    line: '#E4E7EC',
+    ink: '#D0D5DD',
+    brand: '#4A6FA5',
   }
   const dark = {
-    bg: '#121514',
-    rail: '#1C211D',
-    card: '#1C211D',
-    line: '#2B312C',
-    ink: '#3A413B',
-    brand: scheme === 'green' ? '#3BD07E' : '#38BDF8',
+    bg: '#101418',
+    rail: '#1B212A',
+    card: '#1B212A',
+    line: '#232A34',
+    ink: '#344054',
+    brand: '#7DA2D4',
   }
   const renderHalf = (c: typeof light, clip?: string) => (
     <div className="absolute inset-0 flex" style={{ background: c.bg, clipPath: clip }}>
@@ -65,8 +64,6 @@ function ThemePreview({ mode, scheme = 'ocean' }: { mode: ThemeMode; scheme?: Co
 export default function PreferencesSection() {
   const theme = useSettingsStore((s) => s.theme)
   const setTheme = useSettingsStore((s) => s.setTheme)
-  const colorScheme = useSettingsStore((s) => s.colorScheme)
-  const setColorScheme = useSettingsStore((s) => s.setColorScheme)
   const userName = useSettingsStore((s) => s.userName)
   const setUserName = useSettingsStore((s) => s.setUserName)
   const [prefs, updatePrefs] = useLocalPrefs()
@@ -111,7 +108,7 @@ export default function PreferencesSection() {
       {/* 卡片 A · 外观 */}
       <SettingCard
         title="外观"
-        caption="选择界面深浅模式与品牌颜色"
+        caption="选择界面深浅模式"
         className="scroll-mt-24"
       >
         <div className="flex items-start justify-between">
@@ -137,7 +134,7 @@ export default function PreferencesSection() {
                       active ? 'shadow-[0_0_0_2px_var(--brand-500)]' : 'group-hover:shadow-[0_0_0_2px_var(--border-strong)]',
                     )}
                   >
-                    <ThemePreview mode={item.mode} scheme={colorScheme} />
+                    <ThemePreview mode={item.mode} />
                     {active && (
                       <motion.span
                         initial={{ scale: 0 }}
@@ -157,56 +154,6 @@ export default function PreferencesSection() {
             })}
           </div>
           <SavedFlash tick={savedTick} />
-        </div>
-
-        {/* 颜色方案选择 */}
-        <div className="mt-5 border-t border-line pt-5">
-          <div className="mb-3 text-[13px] font-medium text-ink-700">品牌颜色</div>
-          <div className="flex gap-4">
-            {(
-              [
-                { scheme: 'ocean' as const, label: '海洋蓝', desc: '天空碧蓝，宁静专注', color: '#0EA5E9' },
-                { scheme: 'green' as const, label: '森林绿', desc: '自然青翠，舒缓放松', color: '#22B462' },
-              ]
-            ).map((item) => {
-              const active = colorScheme === item.scheme
-              return (
-                <button
-                  key={item.scheme}
-                  type="button"
-                  onClick={() => {
-                    setColorScheme(item.scheme)
-                    setSavedTick((t) => t + 1)
-                  }}
-                  className={cn(
-                    'relative flex items-center gap-3 rounded-r-md border px-4 py-3 text-left transition-all duration-200',
-                    active ? 'border-brand-500 bg-brand-50 shadow-[0_0_0_1px_var(--brand-500)]' : 'border-line bg-surface hover:border-line-strong',
-                  )}
-                >
-                  <span
-                    className="h-8 w-8 shrink-0 rounded-full"
-                    style={{ background: item.color }}
-                  />
-                  <span className="min-w-0">
-                    <span className={cn('block text-[14px] font-semibold', active ? 'text-ink-900' : 'text-ink-700')}>
-                      {item.label}
-                    </span>
-                    <span className="block text-[12px] text-ink-400">{item.desc}</span>
-                  </span>
-                  {active && (
-                    <motion.span
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      transition={{ type: 'spring', stiffness: 600, damping: 20 }}
-                      className="flex h-[18px] w-[18px] items-center justify-center rounded-full bg-brand-500 text-white"
-                    >
-                      <Check size={10} strokeWidth={3} />
-                    </motion.span>
-                  )}
-                </button>
-              )
-            })}
-          </div>
         </div>
       </SettingCard>
 

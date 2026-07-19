@@ -1,15 +1,11 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import type { AISettings, ColorScheme, Theme } from '@/types'
+import type { AISettings, Theme } from '@/types'
 
 interface SettingsState {
   theme: Theme
   toggleTheme: () => void
   setTheme: (theme: Theme) => void
-
-  /** 颜色方案：ocean（海洋蓝，默认）/ green（森林绿） */
-  colorScheme: ColorScheme
-  setColorScheme: (scheme: ColorScheme) => void
 
   /** 当前用户昵称（问候语、头像） */
   userName: string
@@ -41,9 +37,6 @@ export const useSettingsStore = create<SettingsState>()(
       theme: 'light',
       toggleTheme: () => set((s) => ({ theme: s.theme === 'light' ? 'dark' : 'light' })),
       setTheme: (theme) => set({ theme }),
-
-      colorScheme: 'ocean',
-      setColorScheme: (colorScheme) => set({ colorScheme }),
 
       userName: '',
       setUserName: (userName) => set({ userName }),
