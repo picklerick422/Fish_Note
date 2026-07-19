@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { AISettings, Theme } from '@/types'
+import { createThrottledStorage } from '@/lib/persistStorage'
 
 interface SettingsState {
   theme: Theme
@@ -54,7 +55,7 @@ export const useSettingsStore = create<SettingsState>()(
         location.reload()
       },
     }),
-    { name: 'sg-settings', version: 1 },
+    { name: 'sg-settings', version: 1, storage: createThrottledStorage() },
   ),
 )
 

@@ -131,7 +131,7 @@ export default function Memory() {
       const chat = useChatStore.getState()
       let aiId = targetId
       if (aiId) {
-        chat.updateMessage(aiId, { content: '', sources: [], thinkingSteps: [] })
+        chat.updateMessageNow(aiId, { content: '', sources: [], thinkingSteps: [] })
       } else {
         aiId = chat.addMessage({ role: 'assistant', content: '', thinkingSteps: [], sources: [] }).id
       }
@@ -146,7 +146,8 @@ export default function Memory() {
         })
         // 记忆范围：本地过滤引用来源
         const sources = filterSourcesByScope(res.sources, scope, (id) => useNotesStore.getState().getById(id))
-        useChatStore.getState().updateMessage(aiId, {
+        // 流式结束：非节流最终更新，保证完整内容立即落库
+        useChatStore.getState().updateMessageNow(aiId, {
           content: res.answer,
           sources,
           thinkingSteps: res.thinkingSteps,
@@ -154,11 +155,11 @@ export default function Memory() {
       } catch (err) {
         const partial = useChatStore.getState().messages.find((m) => m.id === aiId)?.content ?? ''
         if (isAbortError(err)) {
-          useChatStore.getState().updateMessage(aiId, {
+          useChatStore.getState().updateMessageNow(aiId, {
             content: partial ? `${partial}\n\n*（已停止生成）*` : '*（已停止生成）*',
           })
         } else {
-          useChatStore.getState().updateMessage(aiId, {
+          useChatStore.getState().updateMessageNow(aiId, {
             content: partial || '抱歉，回答生成失败了，请稍后重试。',
           })
           notify.error('AI 回答失败，请稍后重试')

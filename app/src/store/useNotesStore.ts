@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { Note, Notebook, NoteKind } from '@/types'
 import { uid } from '@/lib/utils'
+import { createThrottledStorage } from '@/lib/persistStorage'
 import { seedNotebooks, seedNotes } from './seed'
 
 export interface NoteFilter {
@@ -189,7 +190,7 @@ export const useNotesStore = create<NotesState>()(
         return [...freq.entries()].sort((a, b) => b[1] - a[1]).map(([t]) => t)
       },
     }),
-    { name: 'sg-notes', version: 1 },
+    { name: 'sg-notes', version: 1, storage: createThrottledStorage() },
   ),
 )
 

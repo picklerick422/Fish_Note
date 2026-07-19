@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { format, subDays } from 'date-fns'
 import type { Achievement, StatsData, TokenUsage } from '@/types'
+import { createThrottledStorage } from '@/lib/persistStorage'
 import { useNotesStore } from './useNotesStore'
 import { seedAchievements, seedActivity, seedInspirationSeries } from './seed'
 
@@ -84,7 +85,7 @@ export const useStatsStore = create<StatsState>()(
           ),
         })),
     }),
-    { name: 'sg-stats', version: 1 },
+    { name: 'sg-stats', version: 1, storage: createThrottledStorage() },
   ),
 )
 

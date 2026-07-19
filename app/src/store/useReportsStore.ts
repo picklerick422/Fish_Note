@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { Report } from '@/types'
 import { uid } from '@/lib/utils'
+import { createThrottledStorage } from '@/lib/persistStorage'
 import { seedReports } from './seed'
 
 export interface NewReportInput {
@@ -51,6 +52,6 @@ export const useReportsStore = create<ReportsState>()(
           .reports.filter((r) => r.type === type)
           .sort((a, b) => b.createdAt.localeCompare(a.createdAt)),
     }),
-    { name: 'sg-reports', version: 1 },
+    { name: 'sg-reports', version: 1, storage: createThrottledStorage() },
   ),
 )
