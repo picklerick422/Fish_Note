@@ -4,13 +4,13 @@ import {
   Coins,
   Feather,
   FileText,
+  Fish,
   Flame,
   Library,
   Medal,
   MessagesSquare,
   Moon,
   Sparkles,
-  Sprout,
   Zap,
   type LucideIcon,
 } from 'lucide-react'
@@ -103,7 +103,7 @@ export default function AchievementWall({ baseDelay = 0.4 }: AchievementWallProp
     const maxDay = Object.values(stats.activity).reduce((m, n) => Math.max(m, n), 0)
     const lateNight = live.filter((n) => new Date(n.createdAt).getHours() >= 23).length
     return [
-      { id: 'first-note', storeId: 'first-note', title: '初发芽', desc: '写下第 1 条便签', icon: Sprout, gradient: 'linear-gradient(135deg,#8FB0D8,#4A6FA5)', ring: 'var(--brand-500)', target: 1, current: counts.total },
+      { id: 'first-note', storeId: 'first-note', title: '初次下水', desc: '写下第 1 条便签', icon: Fish, gradient: 'linear-gradient(135deg,#8FB0D8,#4A6FA5)', ring: 'var(--brand-500)', target: 1, current: counts.total },
       { id: 'streak-7', storeId: 'streak-7', title: '七日之约', desc: '连续记录 7 天', icon: Flame, gradient: 'linear-gradient(135deg,#FBBF24,#F59E0B)', ring: '#F59E0B', target: 7, current: stats.streakDays },
       { id: 'streak-30', storeId: 'streak-30', title: '月度坚守', desc: '连续记录 30 天', icon: Flame, gradient: 'linear-gradient(135deg,#FDE68A,#D97706)', ring: '#D97706', target: 30, current: stats.streakDays },
       { id: 'first-weekly', title: '首篇周报', desc: '生成第 1 份周报', icon: FileText, gradient: 'linear-gradient(135deg,#60A5FA,#3B82F6)', ring: 'var(--blue)', target: 1, current: counts.weekly },

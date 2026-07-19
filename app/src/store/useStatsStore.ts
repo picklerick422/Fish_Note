@@ -3,7 +3,7 @@ import { persist } from 'zustand/middleware'
 import { format, subDays } from 'date-fns'
 import type { Achievement, StatsData, TokenUsage } from '@/types'
 import { useNotesStore } from './useNotesStore'
-import { SEED_COUNTER_BASE, seedAchievements, seedActivity, seedInspirationSeries } from './seed'
+import { seedAchievements, seedActivity, seedInspirationSeries } from './seed'
 
 /** 升到下一级所需 XP：Lv.7 → 3000 */
 export const xpForNext = (level: number): number => 400 * level + 200
@@ -21,7 +21,7 @@ interface StatsState {
   xp: number
   tokenUsage: TokenUsage
   achievements: Achievement[]
-  /** 大数字计数器基线（示例量级 = 基线 + 实际便签数） */
+  /** 大数字计数器基线（零起步，随使用累积） */
   counters: { notes: number; daily: number; weekly: number; monthly: number; words: number }
 
   recordActivity: (date?: string, n?: number) => void
@@ -35,14 +35,14 @@ export const useStatsStore = create<StatsState>()(
   persist(
     (set) => ({
       activity: seedActivity(),
-      inspiration: 9471,
-      inspirationWeek: 120,
+      inspiration: 0,
+      inspirationWeek: 0,
       inspirationSeries: seedInspirationSeries(),
-      level: 7,
-      xp: 2340,
-      tokenUsage: { prompt: 182340, completion: 96420, total: 278760 },
+      level: 1,
+      xp: 0,
+      tokenUsage: { prompt: 0, completion: 0, total: 0 },
       achievements: seedAchievements(),
-      counters: { ...SEED_COUNTER_BASE, words: 86200 },
+      counters: { notes: 0, daily: 0, weekly: 0, monthly: 0, words: 0 },
 
       recordActivity: (date, n = 1) =>
         set((s) => {
@@ -119,7 +119,7 @@ export interface NoteCounts {
   memo: number
 }
 
-/** 便签计数（示例量级）：基线 + 实际存活便签数 */
+/** 便签计数：基线 + 实际存活便签数 */
 export function useNoteCounts(): NoteCounts {
   const notes = useNotesStore((s) => s.notes)
   const counters = useStatsStore((s) => s.counters)
