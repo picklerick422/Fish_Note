@@ -39,7 +39,7 @@ module.exports = {
           DEFAULT: "var(--surface)",
           foreground: "var(--ink-900)",
         },
-        /* ---- 拾光便签 design tokens (design.md §3) ---- */
+        /* ---- FishNote 雾蓝 design tokens ---- */
         base: "var(--bg-base)",
         subtle: "var(--bg-subtle)",
         surface: "var(--surface)",
