@@ -73,8 +73,8 @@ export const seedReports = (): Report[] => {
 
 ## 小提示
 
-- 日报适合每天下班前花一分钟生成，周报会在周末自动聚合本周日报的素材。
-- 报告生成后可以导出 Markdown，也可以作为「回忆书」对话的检索素材。`,
+- 日报适合每天下班前花一分钟生成；周报、月报可以覆盖更长的时间范围，素材来自你日常的随手记。
+- 报告生成后可以导出 Markdown，方便归档或分享。`,
       dateRange: { start: today, end: today },
       createdAt: now().toISOString(),
       sources: ['n-guide'],
