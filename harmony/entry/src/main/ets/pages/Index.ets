@@ -1,5 +1,5 @@
 /**
- * 拾光便签 ArkWeb 壳：
+ * 鱼记 ArkWeb 壳：
  * - 通过 setPathAllowingUniversalAccess + file:// 协议加载 resfile 内置 Web 产物
  *   （resource://rawfile 协议有 CORS 限制，子资源 JS/CSS 会被拦截，故改用 resfile）
  * - javaScriptProxy 注入 window.fishNoteShell.saveFile（导出备份）
@@ -110,6 +110,7 @@ struct Index {
         })
         .fileAccess(true) // file:// 协议需要，且 setPathAllowingUniversalAccess 依赖于它
         .domStorageAccess(true) // localStorage 持久化（默认 false，必须开启）
+        .darkMode(WebDarkMode.Auto) // prefers-color-scheme 跟随系统深浅色
         .javaScriptAccess(true)
         .zoomAccess(false) // 桌面应用禁用手势缩放
         // 单常驻页面、Web 组件与进程同生命周期，故豁免 deleteJavaScriptRegister 反注册
