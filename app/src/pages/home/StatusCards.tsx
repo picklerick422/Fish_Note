@@ -79,7 +79,7 @@ function Sparkline({ series }: { series: number[] }) {
   )
 }
 
-/** 小芽头像：每 5s 眨眼（下压 200ms） */
+/** 小鱼头像：每 5s 眨眼（下压 200ms） */
 function BlinkingSprout() {
   const [blink, setBlink] = useState(0)
   useEffect(() => {
@@ -91,7 +91,7 @@ function BlinkingSprout() {
       <motion.img
         key={blink}
         src="/mascot-sprout.svg"
-        alt="小芽"
+        alt="小鱼"
         className="h-8 w-8"
         animate={{ scaleY: [1, 0.88, 1] }}
         transition={{ duration: 0.2 }}

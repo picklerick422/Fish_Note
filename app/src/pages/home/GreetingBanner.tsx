@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router'
 import { motion } from 'framer-motion'
 import { Flame } from 'lucide-react'
-import { format, getISOWeek } from 'date-fns'
+import { format } from 'date-fns'
 import { greetingByHour, WEEKDAYS_CN } from '@/lib/date'
 import { useSettingsStore } from '@/store/useSettingsStore'
 import { computeStreak, useStatsStore } from '@/store/useStatsStore'
@@ -14,8 +14,7 @@ export default function GreetingBanner() {
   const streak = computeStreak(activity).current
 
   const now = new Date()
-  const greeting = `${greetingByHour(now.getHours())}，${userName}`
-  const internWeek = Math.max(1, getISOWeek(now) - 6)
+  const greeting = userName ? `${greetingByHour(now.getHours())}，${userName}` : '你好'
 
   return (
     <div className="col-span-12 flex items-end justify-between">
@@ -40,7 +39,7 @@ export default function GreetingBanner() {
           transition={{ delay: 0.3, duration: 0.3 }}
           className="mt-1.5 text-[12px] leading-[18px] tracking-[0.02em] text-ink-400"
         >
-          今天是 {format(now, 'M月d日')} {WEEKDAYS_CN[now.getDay()]} · 实习第 {internWeek} 周
+          今天是 {format(now, 'M月d日')} {WEEKDAYS_CN[now.getDay()]}
         </motion.p>
       </div>
 

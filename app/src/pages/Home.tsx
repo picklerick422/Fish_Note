@@ -35,7 +35,7 @@ function Shimmer({ className }: { className?: string }) {
 
 function HomeSkeleton() {
   return (
-    <div className="grid grid-cols-12 gap-6">
+    <div className="grid grid-cols-12 gap-[1.5vw]">
       <div className="col-span-12 space-y-2.5">
         <Shimmer className="h-9 w-72" />
         <Shimmer className="h-4 w-52" />
@@ -131,7 +131,7 @@ export default function Home() {
       {loading ? (
         <HomeSkeleton />
       ) : (
-        <div className="grid grid-cols-12 gap-6">
+        <div className="grid grid-cols-12 gap-[1.5vw]">
           <GreetingBanner />
           <StatusCards />
           <QuickCapture />

@@ -40,7 +40,7 @@ function formatBytes(n: number): string {
 const KIND_DIR: Record<Note['kind'], string> = { daily: '日报', weekly: '周报', monthly: '月报', memo: '随手记' }
 
 interface BackupPayload {
-  app: 'shiguang-note'
+  app: 'fishnote'
   version: 1
   exportedAt: string
   data: {
@@ -101,7 +101,7 @@ export default function DataSection() {
     const stats = useStatsStore.getState()
     const settings = useSettingsStore.getState()
     const payload: BackupPayload = {
-      app: 'shiguang-note',
+      app: 'fishnote',
       version: 1,
       exportedAt: new Date().toISOString(),
       data: {
@@ -125,7 +125,7 @@ export default function DataSection() {
       },
     }
     void downloadBlob(
-      `shiguang-backup-${format(new Date(), 'yyyyMMdd')}.json`,
+      `fishnote-backup-${format(new Date(), 'yyyyMMdd')}.json`,
       new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' }),
     )
     notify.success('已导出完整数据 JSON')
@@ -140,7 +140,7 @@ export default function DataSection() {
       zip.file(`${KIND_DIR[n.kind]}/${safe}.md`, header + n.contentMarkdown)
     }
     const blob = await zip.generateAsync({ type: 'blob' })
-    await downloadBlob(`shiguang-notes-${format(new Date(), 'yyyyMMdd')}.zip`, blob)
+    await downloadBlob(`fishnote-notes-${format(new Date(), 'yyyyMMdd')}.zip`, blob)
     notify.success(`已导出 ${live.length} 条便签（Markdown 打包）`)
   }
 
@@ -161,7 +161,7 @@ export default function DataSection() {
       setImportData(payload)
       setImportOpen(true)
     } catch {
-      setImportError('文件校验失败：不是有效的拾光便签备份 JSON')
+      setImportError('文件校验失败：不是有效的 FishNote 备份 JSON')
     }
   }
 

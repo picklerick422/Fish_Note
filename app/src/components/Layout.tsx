@@ -104,12 +104,13 @@ export default function Layout() {
       <div className="min-h-[100dvh] bg-base">
         <SidebarRail />
 
-        <div className="pl-16 lg:pl-[76px]">
+        <div className="pl-[5vw] lg:pl-[5vw]" style={{ minWidth: 0 }}>
           {/* PageHeader：sticky 吸顶，滚动时出现 shadow-card */}
           <header
-            className={`sticky top-0 z-30 flex h-[72px] items-center justify-between gap-4 border-b border-line bg-base/90 px-8 backdrop-blur transition-shadow duration-200 ${
+            className={`sticky top-0 z-30 flex items-center justify-between gap-[1vw] border-b border-line bg-base/90 px-[2vw] backdrop-blur transition-shadow duration-200 ${
               scrolled ? 'shadow-card' : ''
             }`}
+            style={{ height: 'clamp(56px, 5vh, 72px)' }}
           >
             <AnimatePresence mode="wait">
               <motion.div
@@ -139,20 +140,20 @@ export default function Layout() {
             </motion.div>
           </header>
 
-          {/* 内容区 max-width 1240 居中 */}
-          <main className="mx-auto w-full max-w-[1240px] px-8 py-8">
+          {/* 内容区 max-width 92vw 居中 */}
+          <main className="mx-auto w-full px-[2vw] py-[2vh]" style={{ maxWidth: '92vw' }}>
             <Outlet />
           </main>
         </div>
 
         <CommandPalette />
 
-        {/* <768px 兜底提示（design.md §10） */}
+        {/* <768px 兜底提示 */}
         <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center gap-4 bg-base px-8 text-center md:hidden">
           <MonitorX size={40} className="text-ink-300" />
           <div>
             <p className="text-[16px] font-semibold text-ink-900">请使用桌面端访问</p>
-            <p className="mt-1 text-[13px] text-ink-500">拾光便签为桌面体验设计，请在宽度 ≥ 768px 的窗口中使用</p>
+            <p className="mt-1 text-[13px] text-ink-500">FishNote 为平板/桌面体验设计，请在宽度 ≥ 768px 的窗口中使用</p>
           </div>
         </div>
       </div>

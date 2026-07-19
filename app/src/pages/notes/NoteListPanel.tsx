@@ -260,7 +260,7 @@ export default function NoteListPanel({
               image="/empty-notes.svg"
               imageWidth={170}
               title={kind === 'all' ? '这里还没有便签' : `还没有${KIND_LABEL[kind as NoteKind]}`}
-              description="写下第一条，小芽帮你记住"
+              description="写下第一条，小鱼帮你记住"
               className="py-14"
               action={
                 <button

@@ -1,27 +1,32 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <!-- 头顶两片叶子 -->
-  <path d="M120 86c-2-18 8-30 27-32 1 17-9 30-27 32z" fill="#47C87B" stroke="#0F7A42" stroke-width="2"/>
-  <path d="M120 88c0-15-8-25-23-26 0 15 8 25 23 26z" fill="#7DDBA2" stroke="#0F7A42" stroke-width="2"/>
-  <path d="M120 92v-6" stroke="#0F7A42" stroke-width="2"/>
-  <!-- 圆滚滚身体 -->
-  <ellipse cx="120" cy="142" rx="62" ry="56" fill="#D7F5E1" stroke="#0F7A42" stroke-width="2.5"/>
-  <!-- 眯眼微笑 -->
-  <path d="M94 138q6 7 12 0" stroke="#0F7A42" stroke-width="2.5"/>
-  <path d="M134 138q6 7 12 0" stroke="#0F7A42" stroke-width="2.5"/>
-  <path d="M112 154q8 8 16 0" stroke="#0F7A42" stroke-width="2.5"/>
+  <!-- 气泡背景装饰 -->
+  <circle cx="200" cy="45" r="9" fill="#BAE6FD" opacity="0.5"/>
+  <circle cx="215" cy="28" r="6" fill="#CFFAFE" opacity="0.4"/>
+  <circle cx="190" cy="18" r="4" fill="#A5F3FC" opacity="0.3"/>
+  <!-- 鱼身（椭圆主体） -->
+  <ellipse cx="108" cy="130" rx="64" ry="46" fill="#38BDF8" stroke="#0369A1" stroke-width="2.5"/>
+  <!-- 鱼腹（浅色渐变效果） -->
+  <ellipse cx="110" cy="142" rx="50" ry="32" fill="#BAE6FD"/>
+  <!-- 鱼尾（分叉） -->
+  <path d="M170 130l-24-24v18l-18-12v36l18-12v18z" fill="#0284C7" stroke="#0369A1" stroke-width="2.5"/>
+  <!-- 背鳍 -->
+  <path d="M130 84q18-20 30-16" stroke="#0284C7" stroke-width="5" stroke-linecap="round"/>
+  <!-- 腹鳍 -->
+  <path d="M120 168q8-10 18-8" stroke="#0284C7" stroke-width="4" stroke-linecap="round"/>
+  <!-- 大眼白 -->
+  <circle cx="74" cy="118" r="17" fill="#FFFFFF" stroke="#0369A1" stroke-width="2"/>
+  <!-- 瞳孔 -->
+  <circle cx="70" cy="118" r="8" fill="#0C1929"/>
+  <!-- 高光 -->
+  <circle cx="67" cy="114" r="3" fill="#FFFFFF"/>
+  <!-- 微笑嘴巴 -->
+  <path d="M54 142q5 5 10 0" stroke="#0369A1" stroke-width="2.5"/>
   <!-- 腮红 -->
-  <circle cx="90" cy="150" r="5.5" fill="#B0EAC5"/>
-  <circle cx="150" cy="150" r="5.5" fill="#B0EAC5"/>
-  <!-- 左手（挥舞） -->
-  <path d="M62 132q-12-4-16-14" stroke="#0F7A42" stroke-width="2.5"/>
-  <!-- 右手握迷你铅笔 -->
-  <path d="M178 150q12 2 16 10" stroke="#0F7A42" stroke-width="2.5"/>
-  <g transform="rotate(28 196 156)">
-    <rect x="190" y="134" width="11" height="34" rx="2.5" fill="#F59E0B" stroke="#0F7A42" stroke-width="2"/>
-    <rect x="190" y="134" width="11" height="6" rx="2.5" fill="#FBBF24" stroke="#0F7A42" stroke-width="2"/>
-    <path d="M190 168l5.5 11 5.5-11z" fill="#F4E3C2" stroke="#0F7A42" stroke-width="2"/>
-    <path d="M193.6 175.5l1.9 3.5 1.9-3.5z" fill="#3E453F"/>
-  </g>
-  <!-- 脚底影子 -->
-  <ellipse cx="120" cy="204" rx="38" ry="6" fill="#EDFBF1"/>
+  <circle cx="50" cy="135" r="6" fill="#7DD3FC" opacity="0.6"/>
+  <!-- 鱼鳞纹理 -->
+  <path d="M90 108q6-6 12 0" stroke="#A5F3FC" stroke-width="1.5" opacity="0.5"/>
+  <path d="M96 118q6-6 12 0" stroke="#A5F3FC" stroke-width="1.5" opacity="0.5"/>
+  <path d="M90 138q6-6 12 0" stroke="#A5F3FC" stroke-width="1.5" opacity="0.5"/>
+  <!-- 脚底水影 -->
+  <ellipse cx="110" cy="195" rx="45" ry="8" fill="#ECFEFF"/>
 </svg>

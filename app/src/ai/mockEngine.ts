@@ -129,7 +129,7 @@ function buildDailyMarkdown(raw: string): string {
   const dateLabel = format(new Date(), 'M月d日')
   const tags = extractTags(raw)
   const list = (arr: string[], empty: string) => (arr.length > 0 ? arr.map((i) => `- ${i}`).join('\n') : `- ${empty}`)
-  return `## ${dateLabel} · 实习日报 #${seq}
+  return `## ${dateLabel} · 日报 #${seq}
 
 ### ✅ 完成事项
 ${list(done, '暂无记录')}
@@ -151,7 +151,7 @@ function buildMemoMarkdown(raw: string): string {
   const bullets = sentences.map((s) => `- ${polish(s)}`).join('\n')
   return `# ${title}
 
-> 小芽整理于 ${time} ✦
+> 小鱼整理于 ${time} ✦
 
 ${bullets}
 
@@ -234,7 +234,7 @@ function buildReportMarkdown(type: ReportType, notes: Note[], dateRange: { start
     const label = format(new Date(dateRange.end + 'T00:00:00'), 'M月d日')
     return `## ${label} · 日报
 
-> 由小芽根据今日 ${noteWord}自动整理生成 ✦
+> 由小鱼根据今日 ${noteWord}自动整理生成 ✦
 
 ### ✅ 完成事项
 ${list(done, '暂无记录')}
@@ -249,7 +249,7 @@ ${list(plans, '暂无计划')}`
   if (type === 'weekly') {
     return `## 第 ${getISOWeek(new Date())} 周周报
 
-> 覆盖本周 ${noteWord} · 由小芽汇总生成 ✦
+> 覆盖本周 ${noteWord} · 由小鱼汇总生成 ✦
 
 ### 本周完成
 ${list(done, '暂无记录')}
@@ -267,7 +267,7 @@ ${list(plans, '暂无计划')}`
   const monthLabel = format(new Date(), 'M月')
   return `## ${monthLabel}月报
 
-> 覆盖本月 ${noteWord} · 由小芽汇总生成 ✦
+> 覆盖本月 ${noteWord} · 由小鱼汇总生成 ✦
 
 ### 本月概览
 - 沉淀 ${noteWord} · 完成 ${done.length} 件事项
@@ -292,7 +292,7 @@ class MockEngine implements AIProvider {
     await sleep(500)
     let reply: string
     if (/你好|hi|hello|嗨/i.test(last)) {
-      reply = '你好呀，我是小芽 🌱 你可以把今天的碎碎念丢给我整理成日报，也可以问我「这个月我解决了哪些问题？」我会从你的便签里找答案。'
+      reply = '你好呀，我是小鱼 🌱 你可以把今天的碎碎念丢给我整理成日报，也可以问我「这个月我解决了哪些问题？」我会从你的便签里找答案。'
     } else {
       const hits = retrieveNotes(last, 2)
       if (hits.length > 0 && /便签|笔记|记录|找|查|回忆/.test(last)) {

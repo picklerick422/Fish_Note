@@ -256,7 +256,7 @@ export default function Memory() {
         return next
       })
       if (current !== value) {
-        notify.info(value === 'up' ? '感谢点赞，小芽会继续努力 ✦' : '已记录反馈，会努力改进')
+        notify.info(value === 'up' ? '感谢点赞，小鱼会继续努力 ✦' : '已记录反馈，会努力改进')
       }
     },
     [feedback],

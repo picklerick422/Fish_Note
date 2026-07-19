@@ -5,9 +5,9 @@ import StreamingText from '@/components/shared/StreamingText'
 import { useSettingsStore } from '@/store/useSettingsStore'
 
 const WELCOME_TEXT =
-  '你好呀，我是小芽 🌱 在上方写下今天的碎碎念，我会帮你整理成整齐的日报。记录得越多，我能帮你回忆的就越多。'
+  '你好呀，我是小鱼 🐟 在上方写下今天的碎碎念，我会帮你整理成整齐的日报。记录得越多，我能帮你回忆的就越多。'
 
-/** 首次进入欢迎层：小芽气泡（打字机 18 字/秒，8s 自动缩回） */
+/** 首次进入欢迎层：小鱼气泡（打字机 18 字/秒，8s 自动缩回） */
 export default function WelcomeBubble() {
   const welcomed = useSettingsStore((s) => s.welcomed)
   const setWelcomed = useSettingsStore((s) => s.setWelcomed)
@@ -44,7 +44,7 @@ export default function WelcomeBubble() {
           className="fixed bottom-6 right-6 z-50 flex items-end gap-3"
           style={{ transformOrigin: 'bottom right' }}
         >
-          <img src="/mascot-sprout.svg" alt="小芽" className="h-16 w-16 shrink-0 animate-float-breathe" />
+          <img src="/mascot-sprout.svg" alt="小鱼" className="h-16 w-16 shrink-0 animate-float-breathe" />
           <div className="relative max-w-[300px] rounded-r-lg border border-line bg-surface p-4 shadow-pop">
             <button
               type="button"

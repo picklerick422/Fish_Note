@@ -1,5 +1,5 @@
 /**
- * 拾光便签 — 全局类型定义
+ * FishNote — 全局类型定义
  * 所有日期时间统一使用 ISO 字符串（new Date().toISOString()），便于 localStorage 持久化。
  */
 
@@ -123,3 +123,6 @@ export interface DailyDigest {
 }
 
 export type Theme = 'light' | 'dark'
+
+/** 颜色方案：ocean（海洋蓝，默认）/ green（森林绿） */
+export type ColorScheme = 'ocean' | 'green'

@@ -11,7 +11,7 @@ import { useStatsStore } from '@/store/useStatsStore'
 
 const TYPED_KEY = 'sg-assistant-typed'
 
-/** R5 右 · 小芽 AI 助手卡：动态提醒 + 生成周报 + 跳转回忆书 */
+/** R5 右 · 小鱼 AI 助手卡：动态提醒 + 生成周报 + 跳转回忆书 */
 export default function AssistantCard() {
   const navigate = useNavigate()
   const activity = useStatsStore((s) => s.activity)
@@ -56,8 +56,8 @@ export default function AssistantCard() {
       className="col-span-12 rounded-r-xl border border-ai-500/10 bg-ai-50 p-6 xl:col-span-4"
     >
       <div className="flex items-center gap-3">
-        <img src="/mascot-sprout.svg" alt="小芽" className="h-16 w-16 animate-float-breathe" />
-        <h3 className="text-[16px] font-semibold leading-6 text-ink-900">小芽提醒</h3>
+        <img src="/mascot-sprout.svg" alt="小鱼" className="h-16 w-16 animate-float-breathe" />
+        <h3 className="text-[16px] font-semibold leading-6 text-ink-900">小鱼提醒</h3>
       </div>
 
       <div className="mt-3 min-h-[78px] text-[14px] leading-[22px] text-ink-700">
@@ -88,7 +88,7 @@ export default function AssistantCard() {
           onClick={() => navigate('/memory')}
           className="h-9 rounded-r-sm text-[14px] font-medium text-ai-600 transition-colors hover:bg-ai-100"
         >
-          和小芽聊聊
+          和小鱼聊聊
         </button>
         <button
           type="button"

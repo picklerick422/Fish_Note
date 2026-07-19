@@ -29,14 +29,17 @@ function dayKey(days: number): string {
 }
 
 export const seedNotebooks = (): Notebook[] => [
-  { id: 'nb-daily', name: '实习日报', icon: 'CalendarCheck', count: 5 },
-  { id: 'nb-work', name: '工作随记', icon: 'Briefcase', count: 5 },
+  { id: 'nb-daily', name: '日记', icon: 'CalendarCheck', count: 5 },
+  { id: 'nb-work', name: '工作与项目', icon: 'Briefcase', count: 5 },
   { id: 'nb-study', name: '学习笔记', icon: 'BookOpen', count: 4 },
   { id: 'nb-life', name: '生活碎片', icon: 'Coffee', count: 4 },
 ]
 
-const dailyTitle = (days: number, seq: number) =>
-  `${format(subDays(now(), days), 'M月d日')} · 实习日报 #${seq}`
+function dayTitle(days: number, label: string) {
+  const dates: Record<number, string> = { 0: '今日', 1: '昨日' }
+  const prefix = dates[days] ?? `${days}天前`
+  return `${prefix}${label}`
+}
 
 export const seedNotes = (): Note[] => {
   const d0 = format(now(), 'M月d日')
@@ -57,14 +60,14 @@ export const seedNotes = (): Note[] => {
     {
       ...base,
       id: 'n-001',
-      title: dailyTitle(0, 87),
+      title: dayTitle(0, '小结'),
       notebookId: 'nb-daily',
       kind: 'daily',
-      tags: ['工作', '后端', '联调'],
+      tags: ['工作', '记录'],
       aiGenerated: true,
       createdAt: isoDaysAgo(0, 9, 12),
       updatedAt: isoDaysAgo(0, Math.max(0, now().getHours() - 3) || 9, 5),
-      contentMarkdown: `## ${d0} · 实习日报 #87
+      contentMarkdown: `## ${d0} · 今日小结 #87
 
 ### ✅ 完成事项
 - 完成订单模块接口联调
@@ -115,14 +118,14 @@ const value = useSyncExternalStore(
     {
       ...base,
       id: 'n-003',
-      title: dailyTitle(1, 86),
+      title: dayTitle(1, '小结'),
       notebookId: 'nb-daily',
       kind: 'daily',
-      tags: ['工作', '后端'],
+      tags: ['工作', '记录'],
       aiGenerated: true,
       createdAt: isoDaysAgo(1, 19, 2),
       updatedAt: isoDaysAgo(1, 19, 2),
-      contentMarkdown: `## ${d1} · 实习日报 #86
+      contentMarkdown: `## ${d1} · 今日小结 #86
 
 ### ✅ 完成事项
 - 封装订单列表分页组件
@@ -210,14 +213,14 @@ const value = useSyncExternalStore(
     {
       ...base,
       id: 'n-007',
-      title: dailyTitle(5, 85),
+      title: dayTitle(5, '小结'),
       notebookId: 'nb-daily',
       kind: 'daily',
       tags: ['工作'],
       aiGenerated: true,
       createdAt: isoDaysAgo(5, 18, 55),
       updatedAt: isoDaysAgo(5, 18, 55),
-      contentMarkdown: `## ${d5} · 实习日报 #85
+      contentMarkdown: `## ${d5} · 今日小结 #85
 
 ### ✅ 完成事项
 - 订单状态机梳理并输出时序图
@@ -278,14 +281,14 @@ const value = useSyncExternalStore(
     {
       ...base,
       id: 'n-010',
-      title: dailyTitle(8, 84),
+      title: dayTitle(8, '小结'),
       notebookId: 'nb-daily',
       kind: 'daily',
       tags: ['工作'],
       aiGenerated: true,
       createdAt: isoDaysAgo(8, 19, 10),
       updatedAt: isoDaysAgo(8, 19, 10),
-      contentMarkdown: `## ${d8} · 实习日报 #84
+      contentMarkdown: `## ${d8} · 今日小结 #84
 
 ### ✅ 完成事项
 - 完成订单创建接口开发
@@ -421,14 +424,14 @@ export default function myPlugin(): Plugin {
     {
       ...base,
       id: 'n-016',
-      title: dailyTitle(15, 83),
+      title: dayTitle(15, '小结'),
       notebookId: 'nb-daily',
       kind: 'daily',
       tags: ['工作'],
       aiGenerated: true,
       createdAt: isoDaysAgo(15, 19, 30),
       updatedAt: isoDaysAgo(15, 19, 30),
-      contentMarkdown: `## ${d15} · 实习日报 #83
+      contentMarkdown: `## ${d15} · 今日小结 #83
 
 ### ✅ 完成事项
 - 需求评审：订单模块排期确认
@@ -519,8 +522,8 @@ export const seedReports = (): Report[] => {
     {
       id: 'r-001',
       type: 'daily',
-      title: dailyTitle(0, 87),
-      contentMarkdown: `> 由小芽根据今日 3 条随手记自动整理生成 ✦
+      title: dayTitle(0, '小结'),
+      contentMarkdown: `> 由小鱼根据今日 3 条随手记自动整理生成 ✦
 
 ### ✅ 完成事项
 - 完成订单模块接口联调
@@ -543,7 +546,7 @@ export const seedReports = (): Report[] => {
       id: 'r-002',
       type: 'weekly',
       title: `第 ${week} 周周报`,
-      contentMarkdown: `> 覆盖本周 5 篇日报 · 由小芽汇总生成 ✦
+      contentMarkdown: `> 覆盖本周 5 篇日报 · 由小鱼汇总生成 ✦
 
 ### 本周完成
 - 订单模块开发完成度 80%，接口联调过半
@@ -564,7 +567,7 @@ export const seedReports = (): Report[] => {
       id: 'r-003',
       type: 'monthly',
       title: `${monthLabel}月报`,
-      contentMarkdown: `> 覆盖本月 18 篇记录 · 由小芽汇总生成 ✦
+      contentMarkdown: `> 覆盖本月 18 篇记录 · 由小鱼汇总生成 ✦
 
 ### 本月概览
 - 记录 18 天 · 完成 52 件事项 · 输出 4 篇周报素材

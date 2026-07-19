@@ -88,7 +88,7 @@ class OpenAIProvider implements AIProvider {
         {
           role: 'system',
           content:
-            `你是「拾光便签」的整理助手。把用户的碎碎念整理成结构化 Markdown ${target}。\n` +
+            `你是「FishNote」的整理助手。把用户的碎碎念整理成结构化 Markdown ${target}。\n` +
             '日报格式：## M月d日 · 日报 标题，然后三个小节：### ✅ 完成事项、### ⚠️ 问题记录、### 📌 明日计划，' +
             '每节用无序列表，最后附 2-4 个 #标签。随手记格式：# 标题 + 要点列表 + 标签。只输出 Markdown，不要解释。',
         },
@@ -146,7 +146,7 @@ class OpenAIProvider implements AIProvider {
         {
           role: 'system',
           content:
-            `你是「拾光便签」的报告助手。根据用户提供的便签素材，聚合生成一篇结构清晰的${typeLabel}（Markdown）。` +
+            `你是「FishNote」的报告助手。根据用户提供的便签素材，聚合生成一篇结构清晰的${typeLabel}（Markdown）。` +
             '包含：概览数据、完成事项、问题与风险、后续计划。只输出 Markdown。',
         },
         { role: 'user', content: `日期范围：${input.dateRange.start} ~ ${input.dateRange.end}\n\n${material}` },
@@ -172,7 +172,7 @@ class OpenAIProvider implements AIProvider {
         {
           role: 'system',
           content:
-            '你是「拾光便签」的回忆书助手。基于提供的用户便签内容回答问题，' +
+            '你是「FishNote」的回忆书助手。基于提供的用户便签内容回答问题，' +
             '回答中用【便签标题】标注引用来源；若便签内容与问题无关，如实说明没有找到。中文回答。',
         },
         { role: 'user', content: `问题：${question}\n\n相关便签：\n${context || '（无匹配便签）'}` },

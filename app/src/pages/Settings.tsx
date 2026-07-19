@@ -36,7 +36,7 @@ export default function Settings() {
     about: null,
   })
 
-  usePageHeader({ title: '设置', subtitle: '让拾光便签按你的方式工作' })
+  usePageHeader({ title: '设置', subtitle: '让 FishNote 按你的方式工作' })
 
   // 打开 /settings#section → 滚动定位
   useEffect(() => {
@@ -72,9 +72,9 @@ export default function Settings() {
   }
 
   return (
-    <div className="flex items-start gap-8">
-      {/* 左侧子导航（200px sticky） */}
-      <nav className="sticky top-24 w-[200px] shrink-0">
+    <div className="flex items-start gap-[2vw]">
+      {/* 左侧子导航（响应式宽度 sticky） */}
+      <nav className="sticky top-24 shrink-0" style={{ width: 'clamp(160px, 15vw, 220px)' }}>
         <ul className="flex flex-col gap-1">
           {NAV.map((item) => {
             const selected = active === item.id
@@ -105,8 +105,8 @@ export default function Settings() {
         </ul>
       </nav>
 
-      {/* 右侧设置卡片区（max-width 720） */}
-      <div className="min-w-0 w-full max-w-[720px] flex-1 pb-16">
+      {/* 右侧设置卡片区 */}
+      <div className="min-w-0 w-full flex-1 pb-[4vh]" style={{ maxWidth: '65vw' }}>
         {NAV.map((item, groupIdx) => (
           <section
             key={item.id}

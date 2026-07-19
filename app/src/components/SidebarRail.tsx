@@ -37,18 +37,18 @@ export default function SidebarRail() {
 
   return (
     <TooltipProvider delayDuration={300}>
-      <aside className="fixed inset-y-0 left-0 z-40 flex w-16 flex-col items-center border-r border-line bg-surface py-5 lg:w-[76px]">
-        {/* Logo：hover 嫩芽摇摆 400ms */}
+      <aside className="fixed inset-y-0 left-0 z-40 flex flex-col items-center border-r border-line bg-surface py-[2vh]" style={{ width: 'clamp(56px, 5vw, 80px)' }}>
+        {/* Logo：hover 小鱼摇摆 400ms */}
         <motion.button
           type="button"
-          aria-label="拾光便签"
+          aria-label="FishNote"
           onClick={() => navigate('/')}
           whileHover="hover"
           className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-r-md bg-brand-500 shadow-card"
         >
           <motion.img
             src="/logo.svg"
-            alt="拾光便签"
+            alt="FishNote"
             className="h-7 w-7"
             variants={{ hover: { rotate: [0, -10, 10, -5, 0], transition: { duration: 0.4 } } }}
           />
@@ -145,7 +145,7 @@ export default function SidebarRail() {
               onClick={() => navigate('/settings')}
               className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-500 text-[13px] font-semibold text-white"
             >
-              {userName.slice(-1)}
+              {userName ? userName.slice(0, 1) : '?'}
             </button>
             <AnimatePresence>
               {avatarOpen && (
@@ -158,10 +158,10 @@ export default function SidebarRail() {
                 >
                   <div className="flex items-center gap-2.5">
                     <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-500 text-[14px] font-semibold text-white">
-                      {userName.slice(-1)}
+                      {userName ? userName.slice(0, 1) : '?'}
                     </span>
                     <div>
-                      <div className="text-[14px] font-semibold text-ink-900">{userName}</div>
+                      <div className="text-[14px] font-semibold text-ink-900">{userName || '未设置昵称'}</div>
                       <div className="font-display text-[12px] font-semibold text-brand-600">Lv.{level}</div>
                     </div>
                   </div>

@@ -75,7 +75,7 @@ function PalettePanel() {
       { id: 'ai-daily', group: 'AI 操作', label: '✦ 整理今日日报', icon: Sparkles, ai: true, run: go('/reports?generate=daily') },
       { id: 'ai-weekly', group: 'AI 操作', label: '✦ 生成本周周报', icon: Sparkles, ai: true, run: go('/reports?generate=weekly') },
       { id: 'ai-monthly', group: 'AI 操作', label: '✦ 生成本月月报', icon: Sparkles, ai: true, run: go('/reports?generate=monthly') },
-      { id: 'ai-ask', group: 'AI 操作', label: '✦ 向小芽提问', icon: Sparkles, ai: true, run: go('/memory') },
+      { id: 'ai-ask', group: 'AI 操作', label: '✦ 向小鱼提问', icon: Sparkles, ai: true, run: go('/memory') },
       ...notes
         .filter((n) => !n.deletedAt)
         .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))

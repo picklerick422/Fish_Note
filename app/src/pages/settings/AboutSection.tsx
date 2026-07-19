@@ -21,7 +21,7 @@ export default function AboutSection() {
       >
         <motion.img
           src="/logo.svg"
-          alt="拾光便签"
+          alt="FishNote"
           className="h-11 w-11"
           animate={{ rotate: [0, -8, 8, -4, 0] }}
           transition={{ delay: 0.4, duration: 0.6 }}
@@ -33,11 +33,11 @@ export default function AboutSection() {
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.1, duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
       >
-        <h2 className="mt-4 text-[20px] font-bold leading-7 text-ink-900">拾光便签</h2>
-        <p className="mt-1 text-[12px] leading-[18px] tracking-[0.02em] text-ink-400">v1.0.0 · Web 版（Electron Ready）</p>
+        <h2 className="mt-4 text-[20px] font-bold leading-7 text-ink-900">FishNote</h2>
+        <p className="mt-1 text-[12px] leading-[18px] tracking-[0.02em] text-ink-400">v1.0.0 · HarmonyOS 版</p>
         <p className="mt-3 text-[14px] leading-[22px] text-ink-700">随手记录，AI 整理，让碎碎念沉淀成你的知识资产。</p>
         <p className="mt-1 text-[12px] leading-[18px] tracking-[0.02em] text-ink-400">
-          纯前端 + localStorage 构建，为 Electron 封装而生——随时可打包为桌面应用。
+          HarmonyOS 原生壳 + Web 技术构建，数据完全属于你。
         </p>
       </motion.div>
 
@@ -48,7 +48,7 @@ export default function AboutSection() {
         className="mt-4"
       >
         <a
-          href="https://github.com/search?q=SpringNote&type=repositories"
+          href="https://github.com/Radiant303/SpringNote"
           target="_blank"
           rel="noreferrer"
           className="inline-flex items-center gap-1 text-[12px] tracking-[0.02em] text-ink-400 transition-colors hover:text-brand-600"
@@ -87,7 +87,7 @@ export default function AboutSection() {
       <SgModal open={licenseOpen} onClose={() => setLicenseOpen(false)}>
         <h3 className="text-[16px] font-semibold text-ink-900">开源协议</h3>
         <div className="mt-3 max-h-[300px] overflow-y-auto text-[13px] leading-6 text-ink-500">
-          <p>拾光便签基于以下开源项目构建，感谢开源社区：</p>
+          <p>FishNote 基于以下开源项目构建，感谢开源社区：</p>
           <ul className="mt-2 list-disc space-y-1 pl-5">
             <li>React / React DOM（MIT）</li>
             <li>Vite（MIT）</li>

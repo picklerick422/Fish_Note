@@ -51,7 +51,7 @@ export default function RecentNotes() {
           image="/empty-notes.svg"
           imageWidth={150}
           title="还没有便签"
-          description="写下第一条，小芽帮你记住"
+          description="写下第一条，小鱼帮你记住"
           action={
             <Button
               className="h-9 rounded-r-sm"
