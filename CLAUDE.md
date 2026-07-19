@@ -44,7 +44,7 @@ npm run preview    # 预览构建产物
 
 ### 状态层（src/store/）— zustand + persist
 
-每个领域一个 store，localStorage key 前缀 `sg-`：
+每个领域一个 store，localStorage key 前缀 `sg-`。另有非 store 的版本标记 key `sg-data-version`（`src/migrate.ts`）：与内置 `DATA_VERSION` 不一致时清空全部 `sg-` 数据，用于大版本数据迁移。
 
 | store | key | 说明 |
 |---|---|---|
@@ -57,7 +57,7 @@ npm run preview    # 预览构建产物
 
 注意：
 - `useSettingsStore.resetAllData()` 按 `sg-` 前缀清空全部 key，新增持久化 store 只要保持前缀即自动覆盖。
-- `store/seed.ts` 在首次运行（localStorage 为空）时注入示例数据，日期基于安装当天动态生成，热力图用确定性伪随机保证可复现。
+- `store/seed.ts` 在首次运行时注入新手指引（1 便签 + 1 报告），其余空白。
 - 所有日期时间统一 ISO 字符串（`new Date().toISOString()`），类型定义集中在 `src/types/index.ts`。
 
 ### 页面层（src/pages/）
