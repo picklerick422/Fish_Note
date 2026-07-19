@@ -34,7 +34,7 @@ export default function EmptyWelcome({ totalNotes, liveNotes, onPick }: EmptyWel
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.36, ease: [0.16, 1, 0.3, 1] }}
         >
-          <img src="/empty-notes.svg" alt="" width={240} className="animate-float-breathe" />
+          <img src="./empty-notes.svg" alt="" width={240} className="animate-float-breathe" />
         </motion.div>
         <motion.h1
           initial={{ y: 8, opacity: 0 }}
@@ -74,7 +74,7 @@ export default function EmptyWelcome({ totalNotes, liveNotes, onPick }: EmptyWel
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.36, ease: [0.16, 1, 0.3, 1] }}
       >
-        <img src="/empty-memory.svg" alt="" width={240} height={180} className="animate-float-breathe" />
+        <img src="./empty-memory.svg" alt="" width={240} height={180} className="animate-float-breathe" />
       </motion.div>
 
       {/* 标题：词级（逐字）stagger 60ms */}

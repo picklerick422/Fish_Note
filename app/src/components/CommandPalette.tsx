@@ -153,7 +153,7 @@ function PalettePanel() {
         <div ref={listRef} className="max-h-[320px] overflow-y-auto p-2">
           {groups.length === 0 && (
             <div className="flex flex-col items-center py-8">
-              <img src="/empty-search.svg" alt="" width={120} />
+              <img src="./empty-search.svg" alt="" width={120} />
               <p className="mt-2 text-[13px] text-ink-400">没有找到「{query}」相关的内容</p>
             </div>
           )}

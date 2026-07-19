@@ -20,7 +20,7 @@ export default function AboutSection() {
         className="mx-auto flex h-16 w-16 items-center justify-center overflow-hidden rounded-r-lg bg-brand-500 shadow-card"
       >
         <motion.img
-          src="/logo.svg"
+          src="./logo.svg"
           alt="FishNote"
           className="h-11 w-11"
           animate={{ rotate: [0, -8, 8, -4, 0] }}

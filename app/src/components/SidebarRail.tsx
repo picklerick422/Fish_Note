@@ -47,7 +47,7 @@ export default function SidebarRail() {
           className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-r-md bg-brand-500 shadow-card"
         >
           <motion.img
-            src="/logo.svg"
+            src="./logo.svg"
             alt="FishNote"
             className="h-7 w-7"
             variants={{ hover: { rotate: [0, -10, 10, -5, 0], transition: { duration: 0.4 } } }}

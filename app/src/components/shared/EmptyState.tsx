@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 
 interface EmptyStateProps {
-  /** /public 下的插画路径，如 '/empty-notes.svg' */
+  /** /public 下的插画相对路径，如 './empty-notes.svg'（相对路径以兼容壳内 file:// 加载） */
   image?: string
   title: string
   description?: string

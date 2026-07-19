@@ -478,7 +478,7 @@ export default function EditorPane({ note, onRequestNew, focusMode, onToggleFocu
     return (
       <div className="flex h-full items-center justify-center bg-surface">
         <EmptyState
-          image="/empty-notes.svg"
+          image="./empty-notes.svg"
           imageWidth={240}
           title="选择或新建一条便签"
           description="⌘N 新建 · ⌘K 搜索 · 停笔片刻 AI 帮你接着写"

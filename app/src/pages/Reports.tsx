@@ -169,7 +169,7 @@ export default function Reports() {
           />
         ) : (
           <EmptyState
-            image="/empty-search.svg"
+            image="./empty-search.svg"
             imageWidth={220}
             title="报告不存在或已被删除"
             description="它可能刚被移除，回报告中心看看吧"

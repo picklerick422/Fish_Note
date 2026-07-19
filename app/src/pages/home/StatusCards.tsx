@@ -90,7 +90,7 @@ function BlinkingSprout() {
     <span className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-brand-50">
       <motion.img
         key={blink}
-        src="/mascot-sprout.svg"
+        src="./mascot-sprout.svg"
         alt="小鱼"
         className="h-8 w-8"
         animate={{ scaleY: [1, 0.88, 1] }}

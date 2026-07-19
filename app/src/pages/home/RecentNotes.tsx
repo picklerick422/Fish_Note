@@ -48,7 +48,7 @@ export default function RecentNotes() {
 
       {recent.length === 0 ? (
         <EmptyState
-          image="/empty-notes.svg"
+          image="./empty-notes.svg"
           imageWidth={150}
           title="还没有便签"
           description="写下第一条，小鱼帮你记住"

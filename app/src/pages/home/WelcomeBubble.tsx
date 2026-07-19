@@ -44,7 +44,7 @@ export default function WelcomeBubble() {
           className="fixed bottom-6 right-6 z-50 flex items-end gap-3"
           style={{ transformOrigin: 'bottom right' }}
         >
-          <img src="/mascot-sprout.svg" alt="小鱼" className="h-16 w-16 shrink-0 animate-float-breathe" />
+          <img src="./mascot-sprout.svg" alt="小鱼" className="h-16 w-16 shrink-0 animate-float-breathe" />
           <div className="relative max-w-[300px] rounded-r-lg border border-line bg-surface p-4 shadow-pop">
             <button
               type="button"

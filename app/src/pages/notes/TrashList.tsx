@@ -35,7 +35,7 @@ export default function TrashList({ notes }: TrashListProps) {
   if (notes.length === 0) {
     return (
       <EmptyState
-        image="/empty-notes.svg"
+        image="./empty-notes.svg"
         imageWidth={160}
         title="回收站是空的"
         description="删除的便签会在这里保留 30 天"

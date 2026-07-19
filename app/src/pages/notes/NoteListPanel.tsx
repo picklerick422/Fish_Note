@@ -249,7 +249,7 @@ export default function NoteListPanel({
         ) : notes.length === 0 ? (
           query ? (
             <EmptyState
-              image="/empty-search.svg"
+              image="./empty-search.svg"
               imageWidth={170}
               title="没有找到相关便签"
               description={`没有匹配「${query}」的便签，换个关键词试试`}
@@ -257,7 +257,7 @@ export default function NoteListPanel({
             />
           ) : (
             <EmptyState
-              image="/empty-notes.svg"
+              image="./empty-notes.svg"
               imageWidth={170}
               title={kind === 'all' ? '这里还没有便签' : `还没有${KIND_LABEL[kind as NoteKind]}`}
               description="写下第一条，小鱼帮你记住"

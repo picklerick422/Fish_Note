@@ -106,7 +106,7 @@ export default function ReportList({ reports, highlightId, onOpen, onRegenerate,
   if (reports.length === 0) {
     return (
       <EmptyState
-        image="/empty-reports.svg"
+        image="./empty-reports.svg"
         imageWidth={280}
         title="还没有报告"
         description="记录满 3 篇日报，就能生成第一篇周报"
@@ -178,7 +178,7 @@ export default function ReportList({ reports, highlightId, onOpen, onRegenerate,
       {/* A.2 卡片网格 / 列表 */}
       {filtered.length === 0 ? (
         <EmptyState
-          image="/empty-search.svg"
+          image="./empty-search.svg"
           imageWidth={220}
           title="没有找到匹配的报告"
           description="试试调整类型、年份或搜索关键词"
