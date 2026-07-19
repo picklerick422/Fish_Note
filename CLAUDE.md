@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## 环境偏好
+
+- 本环境是虚拟机（目录与真机共享，网络走真机代理）。给用户任何"在浏览器里看"的预览地址时，不要用 `localhost`/`127.0.0.1`，要绑定 `0.0.0.0` 并给出虚拟机局域网 IP（`hostname -I` 获取），让用户在真机浏览器打开。
+
 ## 项目概述
 
 「SpringNote AI — 智能便签」：参考 [Radiant303/SpringNote](https://github.com/Radiant303/SpringNote)（懒人实习记录工具）实现的纯前端 Web 应用，功能为便签记录 + AI 整理/日报周报生成 + 对话式记忆检索。无服务器依赖，全部数据存 localStorage，后续计划用 Electron 封装（因此 vite `base: './'` 使用相对路径）。

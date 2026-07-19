@@ -1,2 +1,5 @@
 # Web 产物同步目标（由 scripts/sync-webapp.sh 生成）
 harmony/entry/src/main/resources/resfile/webapp/
+
+# 可视化头脑风暴预览文件
+.superpowers/
