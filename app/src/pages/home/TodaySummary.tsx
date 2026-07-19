@@ -54,7 +54,7 @@ function DigestColumn({
       ) : (
         <>
           <motion.span
-            animate={flash ? { backgroundColor: ['rgba(215,245,225,.95)', 'rgba(215,245,225,0)'] } : {}}
+            animate={flash ? { backgroundColor: ['rgba(225,234,244,.95)', 'rgba(225,234,244,0)'] } : {}}
             transition={{ duration: 0.6 }}
             className="mt-3 inline-block rounded-r-sm px-1"
           >

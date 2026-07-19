@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils'
 interface ProgressBarProps {
   value: number
   max?: number
-  /** brand=纯绿；xp=琥珀→绿渐变；ai=紫藤渐变 */
+  /** brand=纯色雾蓝；xp=琥珀→雾蓝渐变；ai=紫藤渐变 */
   variant?: 'brand' | 'xp' | 'ai'
   delay?: number
   className?: string
@@ -12,7 +12,7 @@ interface ProgressBarProps {
 
 const FILLS: Record<NonNullable<ProgressBarProps['variant']>, string> = {
   brand: 'var(--brand-500)',
-  xp: 'linear-gradient(90deg,#FBBF24,#22B462)',
+  xp: 'linear-gradient(90deg,#FBBF24,#4A6FA5)',
   ai: 'var(--ai-gradient)',
 }
 

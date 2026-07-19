@@ -103,15 +103,15 @@ export default function AchievementWall({ baseDelay = 0.4 }: AchievementWallProp
     const maxDay = Object.values(stats.activity).reduce((m, n) => Math.max(m, n), 0)
     const lateNight = live.filter((n) => new Date(n.createdAt).getHours() >= 23).length
     return [
-      { id: 'first-note', storeId: 'first-note', title: '初发芽', desc: '写下第 1 条便签', icon: Sprout, gradient: 'linear-gradient(135deg,#7DDBA2,#22B462)', ring: 'var(--brand-500)', target: 1, current: counts.total },
+      { id: 'first-note', storeId: 'first-note', title: '初发芽', desc: '写下第 1 条便签', icon: Sprout, gradient: 'linear-gradient(135deg,#8FB0D8,#4A6FA5)', ring: 'var(--brand-500)', target: 1, current: counts.total },
       { id: 'streak-7', storeId: 'streak-7', title: '七日之约', desc: '连续记录 7 天', icon: Flame, gradient: 'linear-gradient(135deg,#FBBF24,#F59E0B)', ring: '#F59E0B', target: 7, current: stats.streakDays },
       { id: 'streak-30', storeId: 'streak-30', title: '月度坚守', desc: '连续记录 30 天', icon: Flame, gradient: 'linear-gradient(135deg,#FDE68A,#D97706)', ring: '#D97706', target: 30, current: stats.streakDays },
       { id: 'first-weekly', title: '首篇周报', desc: '生成第 1 份周报', icon: FileText, gradient: 'linear-gradient(135deg,#60A5FA,#3B82F6)', ring: 'var(--blue)', target: 1, current: counts.weekly },
-      { id: 'notes-100', storeId: 'notes-100', title: '百条纪念', desc: '便签达 100 条', icon: Library, gradient: 'linear-gradient(135deg,#47C87B,#0F7A42)', ring: 'var(--brand-600)', target: 100, current: counts.total },
+      { id: 'notes-100', storeId: 'notes-100', title: '百条纪念', desc: '便签达 100 条', icon: Library, gradient: 'linear-gradient(135deg,#4A6FA5,#2F4A73)', ring: 'var(--brand-600)', target: 100, current: counts.total },
       { id: 'first-chat', title: '初次回忆', desc: '使用回忆书对话', icon: MessagesSquare, gradient: 'var(--ai-gradient)', ring: 'var(--ai-500)', target: 1, current: messages.length },
       { id: 'peak-day', title: '高产之日', desc: '单日 10 条记录', icon: Zap, gradient: 'linear-gradient(135deg,#FB923C,#F59E0B)', ring: '#FB923C', target: 10, current: maxDay },
       { id: 'night-owl', title: '深夜笔耕', desc: '23 点后记录 10 次', icon: Moon, gradient: 'linear-gradient(135deg,#6366F1,#8B5CF6)', ring: '#6366F1', target: 10, current: lateNight },
-      { id: 'level-5', title: '小有所成', desc: '等级达到 Lv.5', icon: Medal, gradient: 'linear-gradient(135deg,#2DD4BF,#22B462)', ring: '#2DD4BF', target: 5, current: stats.level },
+      { id: 'level-5', title: '小有所成', desc: '等级达到 Lv.5', icon: Medal, gradient: 'linear-gradient(135deg,#7DA2D4,#3D5D8C)', ring: '#7DA2D4', target: 5, current: stats.level },
       { id: 'words-10k', title: '千字成章', desc: '累计书写 10,000 字', icon: Feather, gradient: 'linear-gradient(135deg,#A5B4FC,#6366F1)', ring: '#6366F1', target: 10000, current: stats.totalWords },
       { id: 'inspiration-5k', title: '灵感富翁', desc: '灵感收益达 5,000', icon: Coins, gradient: 'linear-gradient(135deg,#FBBF24,#D97706)', ring: '#D97706', target: 5000, current: stats.inspiration },
       { id: 'ai-100', storeId: 'ai-100', title: 'AI 拍档', desc: '完成 100 次 AI 整理', icon: Sparkles, gradient: 'var(--ai-gradient)', ring: 'var(--ai-500)', target: 100, current: live.filter((n) => n.aiGenerated).length + Math.round(stats.tokenUsage.total / 30000) },

@@ -27,7 +27,7 @@ import { useNoteCounts } from '@/store/useStatsStore'
 import { useAIReady } from '@/store/useSettingsStore'
 import type { ChatMessage } from '@/types'
 
-/** 用户消息气泡（memory.md §2.2）：右侧绿底白字，右下 4px 小角 */
+/** 用户消息气泡（memory.md §2.2）：右侧蓝底白字，右下 4px 小角 */
 function UserBubble({ content }: { content: string }) {
   return (
     <motion.div
