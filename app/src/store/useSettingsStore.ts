@@ -2,6 +2,10 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { AISettings, Theme } from '@/types'
 import { createThrottledStorage } from '@/lib/persistStorage'
+import { useChatStore } from './useChatStore'
+import { useNotesStore } from './useNotesStore'
+import { useReportsStore } from './useReportsStore'
+import { useStatsStore } from './useStatsStore'
 
 interface SettingsState {
   theme: Theme
@@ -49,6 +53,12 @@ export const useSettingsStore = create<SettingsState>()(
       setWelcomed: (welcomed) => set({ welcomed }),
 
       resetAllData: () => {
+        // 先经各 store 的 persist API 清存储：节流 storage 的 removeItem 会
+        // flush 并清掉 pending/timer，避免 reload 时 beforeunload 把旧状态写回
+        for (const store of [useNotesStore, useReportsStore, useChatStore, useStatsStore, useSettingsStore]) {
+          store.persist.clearStorage()
+        }
+        // 再清理非 store 的杂项 key（sg-local-prefs / sg-ai-completion / sg-stats-badge-seen / sg-data-version 等）
         for (const key of Object.keys(localStorage)) {
           if (key.startsWith('sg-')) localStorage.removeItem(key)
         }
