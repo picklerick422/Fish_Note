@@ -1,13 +1,14 @@
-import { useEffect } from 'react'
+import { Suspense, lazy, useEffect } from 'react'
 import { HashRouter, Navigate, Route, Routes } from 'react-router'
 import { Toaster } from 'sonner'
 import Layout from '@/components/Layout'
-import Home from '@/pages/Home'
-import Notes from '@/pages/Notes'
-import Memory from '@/pages/Memory'
-import Reports from '@/pages/Reports'
-import Stats from '@/pages/Stats'
-import Settings from '@/pages/Settings'
+
+const Home = lazy(() => import('@/pages/Home'))
+const Notes = lazy(() => import('@/pages/Notes'))
+const Memory = lazy(() => import('@/pages/Memory'))
+const Reports = lazy(() => import('@/pages/Reports'))
+const Stats = lazy(() => import('@/pages/Stats'))
+const Settings = lazy(() => import('@/pages/Settings'))
 import { useSettingsStore } from '@/store/useSettingsStore'
 
 export default function App() {
@@ -24,17 +25,19 @@ export default function App() {
 
   return (
     <HashRouter>
-      <Routes>
-        <Route element={<Layout />}>
-          <Route index element={<Home />} />
-          <Route path="notes" element={<Notes />} />
-          <Route path="memory" element={<Memory />} />
-          <Route path="reports" element={<Reports />} />
-          <Route path="stats" element={<Stats />} />
-          <Route path="settings" element={<Settings />} />
-        </Route>
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+      <Suspense fallback={null}>
+        <Routes>
+          <Route element={<Layout />}>
+            <Route index element={<Home />} />
+            <Route path="notes" element={<Notes />} />
+            <Route path="memory" element={<Memory />} />
+            <Route path="reports" element={<Reports />} />
+            <Route path="stats" element={<Stats />} />
+            <Route path="settings" element={<Settings />} />
+          </Route>
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Suspense>
       <Toaster
         position="top-center"
         gap={8}
