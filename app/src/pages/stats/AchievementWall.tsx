@@ -105,9 +105,9 @@ export default function AchievementWall({ baseDelay = 0.4 }: AchievementWallProp
     return [
       { id: 'first-note', storeId: 'first-note', title: '初次下水', desc: '写下第 1 条便签', icon: Fish, gradient: 'linear-gradient(135deg,#8FB0D8,#4A6FA5)', ring: 'var(--brand-500)', target: 1, current: counts.total },
       { id: 'streak-7', storeId: 'streak-7', title: '七日之约', desc: '连续记录 7 天', icon: Flame, gradient: 'linear-gradient(135deg,#FBBF24,#F59E0B)', ring: '#F59E0B', target: 7, current: stats.streakDays },
-      { id: 'streak-30', storeId: 'streak-30', title: '月度坚守', desc: '连续记录 30 天', icon: Flame, gradient: 'linear-gradient(135deg,#FDE68A,#D97706)', ring: '#D97706', target: 30, current: stats.streakDays },
+      { id: 'streak-30', storeId: 'streak-30', title: '月度坚持', desc: '连续记录 30 天', icon: Flame, gradient: 'linear-gradient(135deg,#FDE68A,#D97706)', ring: '#D97706', target: 30, current: stats.streakDays },
       { id: 'first-weekly', title: '首篇周报', desc: '生成第 1 份周报', icon: FileText, gradient: 'linear-gradient(135deg,#60A5FA,#3B82F6)', ring: 'var(--blue)', target: 1, current: counts.weekly },
-      { id: 'notes-100', storeId: 'notes-100', title: '百条纪念', desc: '便签达 100 条', icon: Library, gradient: 'linear-gradient(135deg,#4A6FA5,#2F4A73)', ring: 'var(--brand-600)', target: 100, current: counts.total },
+      { id: 'notes-100', storeId: 'notes-100', title: '便签破百', desc: '便签达 100 条', icon: Library, gradient: 'linear-gradient(135deg,#4A6FA5,#2F4A73)', ring: 'var(--brand-600)', target: 100, current: counts.total },
       { id: 'first-chat', title: '初次回忆', desc: '使用回忆书对话', icon: MessagesSquare, gradient: 'var(--ai-gradient)', ring: 'var(--ai-500)', target: 1, current: messages.length },
       { id: 'peak-day', title: '高产之日', desc: '单日 10 条记录', icon: Zap, gradient: 'linear-gradient(135deg,#FB923C,#F59E0B)', ring: '#FB923C', target: 10, current: maxDay },
       { id: 'night-owl', title: '深夜笔耕', desc: '23 点后记录 10 次', icon: Moon, gradient: 'linear-gradient(135deg,#6366F1,#8B5CF6)', ring: '#6366F1', target: 10, current: lateNight },
