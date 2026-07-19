@@ -1,6 +1,7 @@
 /**
  * 拾光便签 ArkWeb 壳：
- * - 加载 rawfile 内置 Web 产物（resource://rawfile/webapp/）
+ * - 通过 setPathAllowingUniversalAccess + file:// 协议加载 resfile 内置 Web 产物
+ *   （resource://rawfile 协议有 CORS 限制，子资源 JS/CSS 会被拦截，故改用 resfile）
  * - javaScriptProxy 注入 window.fishNoteShell.saveFile（导出备份）
  * - onShowFileSelector 接管 <input type="file">（导入备份，过滤 .json）
  */
@@ -87,7 +88,27 @@ struct Index {
 
   build() {
     Column() {
-      Web({ src: 'resource://rawfile/webapp/index.html', controller: this.controller })
+      // src 设为空串，由 onControllerAttached 中 loadUrl 加载
+      // 原因：resource://rawfile 协议的 origin 为 null，ArkWeb CORS 策略会拦截子资源
+      // （JS/CSS），导致白屏。改用 resfile + file:// + setPathAllowingUniversalAccess
+      // 避免 CORS 限制。
+      Web({ src: '', controller: this.controller })
+        .onControllerAttached(() => {
+          try {
+            const ctx = this.getUIContext().getHostContext()
+            if (ctx) {
+              // 设置路径白名单，允许 file:// 协议跨域访问 resfile 目录下的资源
+              this.controller.setPathAllowingUniversalAccess([ctx.resourceDir])
+              // 加载 resfile/webapp/index.html（由 scripts/sync-webapp.sh 同步）
+              this.controller.loadUrl('file://' + ctx.resourceDir + '/webapp/index.html')
+              hilog.info(DOMAIN, TAG, 'loading webapp from resfile: %{public}s/webapp/index.html', ctx.resourceDir)
+            }
+          } catch (e) {
+            const err = e as BusinessError
+            hilog.error(DOMAIN, TAG, 'onControllerAttached failed: %{public}d %{public}s', err.code, err.message)
+          }
+        })
+        .fileAccess(true) // file:// 协议需要，且 setPathAllowingUniversalAccess 依赖于它
         .domStorageAccess(true) // localStorage 持久化（默认 false，必须开启）
         .javaScriptAccess(true)
         .zoomAccess(false) // 桌面应用禁用手势缩放

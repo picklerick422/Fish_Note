@@ -4,7 +4,7 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 APP_DIR="$ROOT/app"
-DEST="$ROOT/harmony/entry/src/main/resources/rawfile/webapp"
+DEST="$ROOT/harmony/entry/src/main/resources/resfile/webapp"
 
 cd "$APP_DIR"
 npm run build
