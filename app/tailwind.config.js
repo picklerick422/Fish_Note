@@ -110,6 +110,7 @@ module.exports = {
         pop: "var(--shadow-pop)",
         ai: "var(--shadow-ai)",
       },
+      // Sora / JetBrains Mono 由 @fontsource 本地打包（见 main.tsx），中文走系统字体栈
       fontFamily: {
         sans: ['"Noto Sans SC"', 'system-ui', '-apple-system', '"PingFang SC"', '"Microsoft YaHei"', 'sans-serif'],
         display: ['Sora', '"Noto Sans SC"', 'system-ui', 'sans-serif'],
