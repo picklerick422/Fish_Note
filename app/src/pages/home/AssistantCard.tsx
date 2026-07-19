@@ -56,7 +56,7 @@ export default function AssistantCard() {
       className="col-span-12 rounded-r-xl border border-ai-500/10 bg-ai-50 p-6 xl:col-span-4"
     >
       <div className="flex items-center gap-3">
-        <img src="./mascot-sprout.svg" alt="小鱼" className="h-16 w-16 animate-float-breathe" />
+        <img src="./mascot-fish.svg" alt="小鱼" className="h-16 w-16 animate-float-breathe" />
         <h3 className="text-[16px] font-semibold leading-6 text-ink-900">小鱼提醒</h3>
       </div>
 

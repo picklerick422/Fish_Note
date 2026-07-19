@@ -80,7 +80,7 @@ function Sparkline({ series }: { series: number[] }) {
 }
 
 /** 小鱼头像：每 5s 眨眼（下压 200ms） */
-function BlinkingSprout() {
+function BlinkingFish() {
   const [blink, setBlink] = useState(0)
   useEffect(() => {
     const t = setInterval(() => setBlink((b) => b + 1), 5000)
@@ -90,7 +90,7 @@ function BlinkingSprout() {
     <span className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-brand-50">
       <motion.img
         key={blink}
-        src="./mascot-sprout.svg"
+        src="./mascot-fish.svg"
         alt="小鱼"
         className="h-8 w-8"
         animate={{ scaleY: [1, 0.88, 1] }}
@@ -129,7 +129,7 @@ export default function StatusCards() {
               Lv.<CountUp value={level} duration={900} separator={false} />
             </span>
           </div>
-          <BlinkingSprout />
+          <BlinkingFish />
         </div>
         <div>
           <ProgressBar value={xp} max={nextXp} variant="xp" delay={0.2} />

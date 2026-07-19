@@ -3,9 +3,9 @@
   <circle cx="106" cy="82" r="44" fill="#FFFFFF" stroke="#3E453F" stroke-width="2.5"/>
   <path d="M139 115l30 30" stroke="#3E453F" stroke-width="8"/>
   <!-- 镜片里的小叶子 -->
-  <path d="M106 96V78" stroke="#22B462" stroke-width="2.5"/>
-  <path d="M106 80c0-8 5-13 14-13 0 8-5 13-14 13z" fill="#7DDBA2" stroke="#22B462" stroke-width="2"/>
-  <path d="M106 83c0-7-4.5-11-11-11 0 7 4.5 11 11 11z" fill="#B0EAC5" stroke="#22B462" stroke-width="2"/>
+  <path d="M106 96V78" stroke="#4A6FA5" stroke-width="2.5"/>
+  <path d="M106 80c0-8 5-13 14-13 0 8-5 13-14 13z" fill="#8FB0D8" stroke="#4A6FA5" stroke-width="2"/>
+  <path d="M106 83c0-7-4.5-11-11-11 0 7 4.5 11 11 11z" fill="#B0EAC5" stroke="#4A6FA5" stroke-width="2"/>
   <!-- 镜片反光 -->
   <path d="M82 62q6-10 16-13" stroke="#E7EAE4" stroke-width="4"/>
   <!-- 飘散小圆点 -->

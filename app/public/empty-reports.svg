@@ -7,10 +7,10 @@
   <path d="M110 78h56" stroke="#E7EAE4" stroke-width="7"/>
   <!-- 绿色折线图 -->
   <path d="M110 148v-34h84" stroke="#E7EAE4" stroke-width="2"/>
-  <path d="M114 138l16-14 14 8 18-20 14 10" stroke="#22B462" stroke-width="3"/>
-  <circle cx="114" cy="138" r="3.5" fill="#D7F5E1" stroke="#22B462" stroke-width="2"/>
-  <circle cx="144" cy="132" r="3.5" fill="#D7F5E1" stroke="#22B462" stroke-width="2"/>
-  <circle cx="176" cy="122" r="3.5" fill="#D7F5E1" stroke="#22B462" stroke-width="2"/>
+  <path d="M114 138l16-14 14 8 18-20 14 10" stroke="#4A6FA5" stroke-width="3"/>
+  <circle cx="114" cy="138" r="3.5" fill="#D7F5E1" stroke="#4A6FA5" stroke-width="2"/>
+  <circle cx="144" cy="132" r="3.5" fill="#D7F5E1" stroke="#4A6FA5" stroke-width="2"/>
+  <circle cx="176" cy="122" r="3.5" fill="#D7F5E1" stroke="#4A6FA5" stroke-width="2"/>
   <path d="M110 158h48" stroke="#E7EAE4" stroke-width="7"/>
   <!-- 「已完成」圆形印章 -->
   <g transform="rotate(-12 206 158)">
