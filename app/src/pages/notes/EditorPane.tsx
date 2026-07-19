@@ -3,8 +3,10 @@
  * 源码/预览双栏（可拖分栏、滚动同步、可点待办）+ 底部状态栏。
  */
 import {
+  memo,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
   type MouseEvent as RMouseEvent,
@@ -60,7 +62,21 @@ const AI_LABEL: Record<AIAction, string> = {
 
 /* ---------------- 预览渲染（可点击待办） ---------------- */
 
-function PreviewPane({
+/** 300ms 防抖：预览区不随每次击键全量重渲染 Markdown */
+function useDebounced<T>(value: T, delay: number): T {
+  const [v, setV] = useState(value)
+  useEffect(() => {
+    const t = setTimeout(() => setV(value), delay)
+    return () => clearTimeout(t)
+  }, [value, delay])
+  return v
+}
+
+// ReactMarkdown 插件数组固定为模块级常量，避免每次渲染换引用
+const REMARK_PLUGINS = [remarkGfm]
+const REHYPE_PLUGINS = [rehypeHighlight]
+
+const PreviewPane = memo(function PreviewPane({
   content,
   onToggleTask,
   scrollRef,
@@ -71,27 +87,32 @@ function PreviewPane({
   scrollRef: RefObject<HTMLDivElement | null>
   onScroll: () => void
 }) {
-  let checkboxSeq = 0
-  const components: Components = {
-    input: ({ node, disabled: _disabled, ...rest }) => {
-      if (rest.type !== 'checkbox') return <input {...rest} />
-      const seq = checkboxSeq++
-      const line = node?.position?.start.line ? node.position.start.line - 1 : undefined
-      return (
-        <input {...rest} className="cursor-pointer" onChange={() => onToggleTask(line, seq)} />
-      )
-    },
-  }
+  // components 依赖 content：内容变化时重建以重置复选框序号
+  const components = useMemo<Components>(() => {
+    let checkboxSeq = 0
+    return {
+      input: ({ node, disabled, ...rest }) => {
+        if (rest.type !== 'checkbox') return <input disabled={disabled} {...rest} />
+        const seq = checkboxSeq++
+        const line = node?.position?.start.line ? node.position.start.line - 1 : undefined
+        return (
+          <input {...rest} className="cursor-pointer" onChange={() => onToggleTask(line, seq)} />
+        )
+      },
+    }
+    // content 是有意依赖：内容变化时重建 components 以重置 checkboxSeq
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [onToggleTask, content])
   return (
     <div ref={scrollRef} onScroll={onScroll} className="h-full overflow-auto px-7 py-6">
       <div className="markdown-body">
-        <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight]} components={components}>
+        <ReactMarkdown remarkPlugins={REMARK_PLUGINS} rehypePlugins={REHYPE_PLUGINS} components={components}>
           {content || '*暂无内容*'}
         </ReactMarkdown>
       </div>
     </div>
   )
-}
+})
 
 /* ---------------- 主组件 ---------------- */
 
@@ -400,35 +421,33 @@ export default function EditorPane({ note, onRequestNew, focusMode, onToggleFocu
     setTask(null)
   }, [])
 
-  /* 预览待办回写源码：优先按 hast position 行号定位，失败则按第 N 个复选框定位 */
-  const toggleTaskAtLine = useCallback(
-    (lineIdx: number | undefined, seq: number) => {
-      const lines = content.split('\n')
-      const re = /^(\s*[-*+]\s+\[)( |x|X)(\])/
-      let target = -1
-      if (lineIdx !== undefined && lines[lineIdx] && re.test(lines[lineIdx])) {
-        target = lineIdx
-      } else {
-        let seen = 0
-        for (let i = 0; i < lines.length; i++) {
-          if (re.test(lines[i])) {
-            if (seen === seq) {
-              target = i
-              break
-            }
-            seen += 1
+  /* 预览待办回写源码：优先按 hast position 行号定位，失败则按第 N 个复选框定位；
+     经 latest 快照读取 content，保持回调引用稳定（配合 PreviewPane 的 React.memo） */
+  const toggleTaskAtLine = useCallback((lineIdx: number | undefined, seq: number) => {
+    const lines = latest.current.content.split('\n')
+    const re = /^(\s*[-*+]\s+\[)( |x|X)(\])/
+    let target = -1
+    if (lineIdx !== undefined && lines[lineIdx] && re.test(lines[lineIdx])) {
+      target = lineIdx
+    } else {
+      let seen = 0
+      for (let i = 0; i < lines.length; i++) {
+        if (re.test(lines[i])) {
+          if (seen === seq) {
+            target = i
+            break
           }
+          seen += 1
         }
       }
-      if (target === -1) return
-      lines[target] = lines[target].replace(re, (_m, p1: string, p2: string, p3: string) =>
-        p1 + (p2 === ' ' ? 'x' : ' ') + p3,
-      )
-      setContent(lines.join('\n'))
-      markDirty()
-    },
-    [content],
-  )
+    }
+    if (target === -1) return
+    lines[target] = lines[target].replace(re, (_m, p1: string, p2: string, p3: string) =>
+      p1 + (p2 === ' ' ? 'x' : ' ') + p3,
+    )
+    setContent(lines.join('\n'))
+    markDirty()
+  }, [])
 
   /* 双栏滚动同步（按比例，100ms 节流；guard 防环） */
   const syncPreview = useCallback((r: number) => {
@@ -472,6 +491,15 @@ export default function EditorPane({ note, onRequestNew, focusMode, onToggleFocu
     setAiEnabled(v)
     localStorage.setItem('sg-ai-completion', v ? 'on' : 'off')
   }
+
+  /* 预览内容 300ms 防抖：源码区实时，预览区不随击键全量重渲染 */
+  const debouncedContent = useDebounced(content, 300)
+
+  /* 底部状态栏字数/行数：仅 content 变化时重算 */
+  const contentStats = useMemo(
+    () => ({ words: wordCount(content), lines: content.split('\n').length }),
+    [content],
+  )
 
   /* ---------- 空态 ---------- */
   if (!note) {
@@ -717,7 +745,7 @@ export default function EditorPane({ note, onRequestNew, focusMode, onToggleFocu
           style={{ pointerEvents: showPreview ? 'auto' : 'none' }}
         >
           <PreviewPane
-            content={content}
+            content={debouncedContent}
             onToggleTask={toggleTaskAtLine}
             scrollRef={previewRef}
             onScroll={onPreviewScroll}
@@ -728,7 +756,7 @@ export default function EditorPane({ note, onRequestNew, focusMode, onToggleFocu
       {/* 3.4 底部状态栏 */}
       <div className="flex h-8 shrink-0 items-center justify-between border-t border-line px-4 text-[12px] text-ink-400">
         <span>
-          {wordCount(content)} 字 · {content.split('\n').length} 行 · Markdown
+          {contentStats.words} 字 · {contentStats.lines} 行 · Markdown
         </span>
         <div className="flex items-center gap-3">
           {aiReady ? (

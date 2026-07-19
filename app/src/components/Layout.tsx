@@ -1,6 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from 'react'
 import { Outlet, useLocation, useNavigate } from 'react-router'
-import Lenis from 'lenis'
 import { AnimatePresence, motion } from 'framer-motion'
 import { MonitorX } from 'lucide-react'
 import SidebarRail from './SidebarRail'
@@ -48,21 +47,6 @@ export default function Layout() {
   const navigate = useNavigate()
   const location = useLocation()
   const setHeaderCb = useCallback<SetHeader>((cfg) => setHeader(cfg), [])
-
-  // Lenis 平滑滚动（lerp 0.1，design.md §8）
-  useEffect(() => {
-    const lenis = new Lenis({ lerp: 0.1 })
-    let raf = 0
-    const loop = (time: number) => {
-      lenis.raf(time)
-      raf = requestAnimationFrame(loop)
-    }
-    raf = requestAnimationFrame(loop)
-    return () => {
-      cancelAnimationFrame(raf)
-      lenis.destroy()
-    }
-  }, [])
 
   // header 吸顶阴影
   useEffect(() => {

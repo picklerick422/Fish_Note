@@ -1,5 +1,4 @@
-import { useMemo, useState } from 'react'
-import { motion, useReducedMotion } from 'framer-motion'
+import { memo, useMemo, useState } from 'react'
 import { format } from 'date-fns'
 import { cn } from '@/lib/utils'
 
@@ -32,8 +31,8 @@ interface CellInfo {
   inYear: boolean
 }
 
-/** 年度活跃热力图：列=周，行=周一~周日，按列 stagger 入场 */
-export default function Heatmap({
+/** 年度活跃热力图：列=周，行=周一~周日，按格子 stagger 入场（纯 CSS 动画） */
+function Heatmap({
   data,
   year = new Date().getFullYear(),
   cell = 11,
@@ -43,7 +42,6 @@ export default function Heatmap({
   animate = true,
   className,
 }: HeatmapProps) {
-  const reduced = useReducedMotion()
   const [hover, setHover] = useState<{ info: CellInfo; x: number; y: number } | null>(null)
 
   const { weeks, monthLabels } = useMemo(() => {
@@ -98,19 +96,11 @@ export default function Heatmap({
       <div className="flex" style={{ gap }}>
         {weeks.map((week, wi) => (
           <div key={wi} className="flex flex-col" style={{ gap }}>
-            {week.map((info) => {
+            {week.map((info, di) => {
               const level = heatLevel(info.count)
               return (
-                <motion.div
+                <div
                   key={info.date}
-                  initial={animate && !reduced ? { scale: 0.4, opacity: 0 } : false}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={
-                    animate && !reduced
-                      ? { delay: wi * 0.014, type: 'spring', stiffness: 600, damping: 28 }
-                      : { duration: 0 }
-                  }
-                  whileHover={{ scale: 1.25 }}
                   onMouseEnter={(e) => {
                     const el = e.currentTarget as HTMLElement
                     const rect = el.getBoundingClientRect()
@@ -119,13 +109,19 @@ export default function Heatmap({
                   }}
                   onMouseLeave={() => setHover(null)}
                   onClick={() => info.inYear && onCellClick?.(info.date)}
-                  className={cn('rounded-[3px]', onCellClick && info.inYear && 'cursor-pointer')}
+                  className={cn(
+                    'rounded-[3px] transition-transform hover:scale-125',
+                    animate && 'animate-heat-pop',
+                    onCellClick && info.inYear && 'cursor-pointer',
+                  )}
                   style={{
                     width: cell,
                     height: cell,
                     backgroundColor: info.inYear ? HEAT_LEVELS[level] : 'transparent',
                     border: empty && info.inYear ? '1px dashed var(--border-strong)' : undefined,
                     boxSizing: 'border-box',
+                    // 逐格 stagger 入场延迟
+                    animationDelay: animate ? `${(wi * 7 + di) * 1.5}ms` : undefined,
                   }}
                 />
               )
@@ -159,3 +155,5 @@ export default function Heatmap({
     </div>
   )
 }
+
+export default memo(Heatmap)

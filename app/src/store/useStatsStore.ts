@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { format, subDays } from 'date-fns'
@@ -153,8 +154,12 @@ export function useStatsData(): StatsData {
   const counters = useStatsStore((s) => s.counters)
   const notes = useNotesStore((s) => s.notes)
   const counts = useNoteCounts()
-  const streak = computeStreak(activity)
-  const liveWords = notes.reduce((sum, n) => sum + (n.deletedAt ? 0 : countWords(n.contentMarkdown)), 0)
+  // 派生数据 memo：仅依赖变化时重算，避免每次渲染跑 500 天回扫 / 全文计字
+  const streak = useMemo(() => computeStreak(activity), [activity])
+  const liveWords = useMemo(
+    () => notes.reduce((sum, n) => sum + (n.deletedAt ? 0 : countWords(n.contentMarkdown)), 0),
+    [notes],
+  )
   return {
     totalNotes: counts.total,
     totalWords: counters.words + liveWords,

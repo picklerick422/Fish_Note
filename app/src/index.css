@@ -316,6 +316,16 @@
 }
 
 @layer utilities {
+  /* 热力图格子入场动画（替代 framer-motion，见 shared/Heatmap.tsx） */
+  @keyframes heat-pop {
+    from { opacity: 0; transform: scale(.6); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  .animate-heat-pop { animation: heat-pop .3s ease backwards; }
+  @media (prefers-reduced-motion: reduce) {
+    .animate-heat-pop { animation: none; }
+  }
+
   /* highlight.js github-dark overrides for .dark theme */
   .dark .hljs { color: #c9d1d9; background: transparent; }
   .dark .hljs-doctag, .dark .hljs-keyword, .dark .hljs-meta .hljs-keyword,
