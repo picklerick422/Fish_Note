@@ -2,15 +2,15 @@
   "string": [
     {
       "name": "module_desc",
-      "value": "FishNote 主模块"
+      "value": "鱼记 主模块"
     },
     {
       "name": "EntryAbility_desc",
-      "value": "FishNote — AI 智能便签"
+      "value": "鱼记 — AI 智能便签"
     },
     {
       "name": "EntryAbility_label",
-      "value": "FishNote"
+      "value": "鱼记"
     }
   ]
 }

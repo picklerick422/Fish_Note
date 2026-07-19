@@ -21,7 +21,7 @@ export default function AboutSection() {
       >
         <motion.img
           src="./logo.svg"
-          alt="FishNote"
+          alt="鱼记 FishNote"
           className="h-11 w-11"
           animate={{ rotate: [0, -8, 8, -4, 0] }}
           transition={{ delay: 0.4, duration: 0.6 }}
@@ -33,7 +33,7 @@ export default function AboutSection() {
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.1, duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
       >
-        <h2 className="mt-4 text-[20px] font-bold leading-7 text-ink-900">FishNote</h2>
+        <h2 className="mt-4 text-[20px] font-bold leading-7 text-ink-900">鱼记 FishNote</h2>
         <p className="mt-1 text-[12px] leading-[18px] tracking-[0.02em] text-ink-400">v1.0.0 · HarmonyOS 版</p>
         <p className="mt-3 text-[14px] leading-[22px] text-ink-700">随手记录，AI 整理，让碎碎念沉淀成你的知识资产。</p>
         <p className="mt-1 text-[12px] leading-[18px] tracking-[0.02em] text-ink-400">
@@ -87,7 +87,7 @@ export default function AboutSection() {
       <SgModal open={licenseOpen} onClose={() => setLicenseOpen(false)}>
         <h3 className="text-[16px] font-semibold text-ink-900">开源协议</h3>
         <div className="mt-3 max-h-[300px] overflow-y-auto text-[13px] leading-6 text-ink-500">
-          <p>FishNote 基于以下开源项目构建，感谢开源社区：</p>
+          <p>鱼记 FishNote 基于以下开源项目构建，感谢开源社区：</p>
           <ul className="mt-2 list-disc space-y-1 pl-5">
             <li>React / React DOM（MIT）</li>
             <li>Vite（MIT）</li>
