@@ -20,6 +20,11 @@ export default function App() {
     root.classList.add('theme-anim')
     root.classList.toggle('dark', theme === 'dark')
     const timer = setTimeout(() => root.classList.remove('theme-anim'), 320)
+    // 同步系统状态栏/导航栏图标颜色到 ArkWeb 壳
+    const shell = (window as any).fishNoteShell
+    if (shell?.setDarkMode) {
+      shell.setDarkMode(theme === 'dark')
+    }
     return () => clearTimeout(timer)
   }, [theme])
 

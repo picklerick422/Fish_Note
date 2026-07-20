@@ -4,15 +4,20 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 环境偏好
 
-- 本环境是虚拟机（目录与真机共享，网络走真机代理）。给用户任何"在浏览器里看"的预览地址时，不要用 `localhost`/`127.0.0.1`，要绑定 `0.0.0.0` 并给出虚拟机局域网 IP（`hostname -I` 获取），让用户在真机浏览器打开。
+- 本环境是虚拟机（目录与真机共享，网络走真机代理）。给任何预览地址时绑定 `0.0.0.0` 并用 `hostname -I` 取虚拟机局域网 IP，让用户在真机浏览器打开。
+- 代码注释与 UI 文案均为中文，新代码保持一致。
+- 未配置测试框架。
+- 不要读取 `design.md`（不在仓库中）。
 
 ## 项目概述
 
-「SpringNote AI — 智能便签」：参考 [Radiant303/SpringNote](https://github.com/Radiant303/SpringNote)（懒人实习记录工具）实现的纯前端 Web 应用，功能为便签记录 + AI 整理/日报周报生成 + 对话式记忆检索。无服务器依赖，全部数据存 localStorage，后续计划用 Electron 封装（因此 vite `base: './'` 使用相对路径）。
+鱼记 (Fish Note) — 智能便签应用。参考 [SpringNote](https://github.com/Radiant303/SpringNote) 实现的纯前端 Web 应用，功能为便签记录 + AI 整理/报告生成 + 对话式记忆检索（RAG）。无服务器依赖，全部数据存 localStorage。
 
-- 应用代码全部在 `app/` 目录；根目录的 `info.md`（参考项目调研）和 `plan.md`(开发计划) 是背景文档。
-- 代码注释与 UI 文案均为中文，新代码保持一致。部分注释引用的 `design.md` 不在仓库中，不要试图读取它。
-- 未配置测试框架，也不是 git 仓库。
+**双栈架构**：
+- `app/` — React Web 应用（主要代码）
+- `harmony/` — HarmonyOS ArkWeb 原生壳，将 Web 应用打包为鸿蒙原生应用（平板/二合一设备）
+
+`info.md`（调研）和 `plan.md`（开发计划）为背景文档。
 
 ## 常用命令
 
@@ -21,54 +26,130 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ```bash
 npm install        # 首次需要（node_modules 未提交）
 npm run dev        # Vite 开发服务器，端口 3000
-npm run build      # tsc -b && vite build（类型检查 + 打包，改动后用它验证）
+npm run build      # tsc -b && vite build（类型检查 + 打包）
 npm run lint       # ESLint
 npm run preview    # 预览构建产物
 ```
 
-## 架构
+### 同步 Web 产物到鸿蒙壳
 
-技术栈：React 19 + TypeScript + Vite 7 + Tailwind CSS 3 + shadcn/ui + zustand。路径别名 `@` → `app/src`。
+```bash
+bash scripts/sync-webapp.sh   # 构建 app/ 并复制产物到 harmony/entry/.../resfile/webapp/
+```
 
-### AI 层（src/ai/）— 可插拔 Provider
+该脚本执行 `npm run build` + 复制 `app/dist/` → `harmony/entry/src/main/resources/resfile/webapp/`。
 
-页面层只从 `@/ai` 导入 `getAIProvider()`，不直接依赖具体实现：
+开发时在 `app/` 下跑 `npm run dev` 即可热更新；仅在需要真机/模拟器调试鸿蒙壳时才跑同步脚本。
 
-- `provider.ts`：`AIProvider` 接口（chat / structure / complete / summarize / extractTodos / generateReport / ask 七个能力），所有方法返回完整文本 Promise，流式通过 `opts.onToken(chunk, fullText)` 回调，取消用 `AbortSignal`（配套 `isAbortError()` 判断）。
-- `mockEngine.ts`：内置规则式模拟引擎（离线可完整演示，打字机流式输出）。RAG 检索函数 `retrieveNotes` 也在这里，供两个 Provider 共用。
-- `openaiProvider.ts`：OpenAI 兼容 API（fetch + SSE 流式），配置读自 `useSettingsStore`。
-- 选择逻辑（`index.ts`）：设置为 `openai` 且填了 apiKey → openaiProvider，否则 mockEngine。
-- 两个 Provider 都会把估算 token 用量写入 `useStatsStore.addTokenUsage`。
+## 技术栈与关键依赖
 
-新增 AI 能力时：先在 `provider.ts` 加接口方法，两个实现都要补齐。
+**Web 应用**：
+- React 19 + TypeScript 5.9 + Vite 7
+- Tailwind CSS 3 + shadcn/ui（Radix UI 组件）
+- zustand 5（状态管理 + localStorage 持久化）
+- react-router v7（HashRouter）
+- react-markdown + remark-gfm + rehype-highlight + highlight.js（Markdown 渲染）
+- recharts（图表）、framer-motion（动画）、date-fns（日期）
 
-### 状态层（src/store/）— zustand + persist
+**鸿蒙壳**：
+- HarmonyOS SDK 6.1.0(23)
+- ArkWeb + ArkTS
+- 图标生成：`scripts/gen-icons.py`（Pillow）
 
-每个领域一个 store，localStorage key 前缀 `sg-`。另有非 store 的版本标记 key `sg-data-version`（`src/migrate.ts`）：与内置 `DATA_VERSION` 不一致时清空全部 `sg-` 数据，用于大版本数据迁移。
+## 整体架构
 
-| store | key | 说明 |
-|---|---|---|
-| useNotesStore | `sg-notes` | 便签 + 笔记本；软删除（`deletedAt`）实现回收站；笔记本 count 由 `withCounts` 派生 |
-| useReportsStore | `sg-reports` | 日报/周报/月报 |
-| useChatStore | `sg-chat` | 回忆书对话 |
-| useStatsStore | `sg-stats` | 活跃热力图、等级/XP、token 用量、成就 |
-| useSettingsStore | `sg-settings` | 主题、昵称、AI 供应商配置 |
-| useUIStore | （不持久化） | 命令面板开关等临时 UI 状态 |
+```
+app/src/
+├── ai/              # AI 可插拔 Provider 层
+│   ├── provider.ts      # AIProvider 统一接口定义
+│   ├── index.ts         # getAIProvider() — 根据设置返回 mock/openai 实例
+│   ├── mockEngine.ts    # 本地模拟引擎（离线可演示全部 AI 功能）
+│   └── openaiProvider.ts # OpenAI 兼容 API Provider
+├── store/           # zustand 状态切片
+│   ├── useNotesStore.ts    # 便签 + 笔记本 CRUD、搜索/过滤
+│   ├── useChatStore.ts     # 回忆书对话消息
+│   ├── useReportsStore.ts  # 报告（日报/周报/月报）
+│   ├── useSettingsStore.ts # 主题、AI 配置、用户名、resetAllData()
+│   ├── useStatsStore.ts    # 统计数据（派生指标 + 成就）
+│   ├── useUIStore.ts       # 侧栏折叠等 UI 状态
+│   └── seed.ts             # 首次使用种子数据
+├── pages/           # 路由页面
+│   ├── Home.tsx         # 首页工作台（快速记录、热力图、今日摘要）
+│   ├── Notes.tsx        # 便签编辑（Markdown 编辑器 + 笔记本列表）
+│   ├── Memory.tsx       # 回忆书 AI 对话（类 ChatGPT RAG）
+│   ├── Reports.tsx      # 报告中心（生成/查看日报/周报/月报）
+│   ├── Stats.tsx        # 统计面板（热力图、趋势图、成就墙）
+│   └── Settings.tsx     # 设置（AI 配置、偏好、数据管理）
+├── components/      # 共享组件 + shadcn/ui 组件
+│   ├── Layout.tsx       # 侧栏导航布局（HashRouter + Outlet）
+│   ├── SidebarRail.tsx  # 左侧窄图标导航栏
+│   ├── CommandPalette.tsx # ⌘K 命令面板
+│   ├── shared/          # 业务共享组件（Heatmap、MarkdownRenderer、StreamingText 等）
+│   └── ui/              # shadcn/ui 组件（button、dialog、dropdown-menu 等）
+├── lib/             # 工具函数
+│   ├── persistStorage.ts # localStorage 写盘节流（1000ms）
+│   ├── download.ts       # 导出下载（浏览器 <a download> / 鸿蒙壳原生桥）
+│   ├── date.ts           # 日期工具
+│   └── utils.ts          # cn()、uid() 等
+├── hooks/           # 自定义 hooks
+├── types/index.ts   # 全局类型定义
+├── migrate.ts       # 数据版本迁移（main.tsx 首个 import）
+└── main.tsx         # 入口
+```
 
-注意：
-- `useSettingsStore.resetAllData()` 按 `sg-` 前缀清空全部 key，新增持久化 store 只要保持前缀即自动覆盖。
-- `store/seed.ts` 在首次运行时注入新手指引（1 便签 + 1 报告），其余空白。
-- 所有日期时间统一 ISO 字符串（`new Date().toISOString()`），类型定义集中在 `src/types/index.ts`。
+## 关键架构决策
 
-### 页面层（src/pages/）
+### AI Provider 可插拔模式
 
-react-router 路由在 `App.tsx`：`/`（首页工作台）、`/notes`（Markdown 便签编辑）、`/memory`（回忆书 AI 对话）、`/reports`、`/stats`、`/settings`。
+`AIProvider` 接口（`app/src/ai/provider.ts`）定义 6 个方法：`chat`、`structure`、`complete`、`summarize`、`extractTodos`、`generateReport`、`ask`。所有页面通过 `getAIProvider()` 获取当前 Provider，不直接依赖底层实现。内置 `mockEngine` 离线模拟全部功能，`openaiProvider` 接 OpenAI 兼容 API。用户可在设置页切换。
 
-- 每个页面 = `src/pages/X.tsx` 入口 + `src/pages/x/` 子目录放该页专属组件。
-- `components/Layout.tsx` 是 App Shell（左侧 SidebarRail + 顶部 PageHeader）：页面通过 `usePageHeader(config, deps)` hook 设置自己的标题/操作按钮；全局键盘导航 `g` + `h/n/m/r/s`，命令面板由 `useUIStore` 控制。
-- 主题切换：`App.tsx` 在 `<html>` 上 toggle `.dark` class。
+### 持久化与节流
 
-### UI 组件
+所有 zustand store 通过 `zustand/middleware/persist` 持久化到 localStorage，使用 `createThrottledStorage(1000)` 节流——同一 key 在 1 秒内的多次写入只落盘最后一次，避免流式输出/连续击键时的性能问题。`beforeunload` 时 flush 所有 pending 写入。
 
-- `src/components/ui/`：shadcn/ui 生成的组件（50+），当作三方库使用，一般不改。
-- `src/components/shared/`：项目自定义通用组件（Heatmap、StreamingText、MarkdownRenderer、ThinkingAccordion 等），优先复用。
+### 数据版本迁移
+
+`app/src/migrate.ts` 必须是 `main.tsx` 的第一个 import（ES 模块按 import 顺序求值），在任何 store 水合之前执行。版本号变更时清空全部 `sg-*` localStorage key，由 seed 重新注入。
+
+### 鸿蒙壳桥接
+
+鸿蒙 ArkWeb 壳（`harmony/entry/src/main/ets/pages/Index.ets`）：
+- 使用 `file://` + `setPathAllowingUniversalAccess` 加载 resfile 中的 Web 产物（`resource://rawfile` 有 CORS 限制，子资源会被拦截）
+- `javaScriptProxy` 注入 `window.fishNoteShell.saveFile(filename, base64)` 用于备份导出
+- `onShowFileSelector` 接管 `<input type="file">` 用于恢复备份（过滤 `.json`）
+- `darkMode(WebDarkMode.Auto)` 跟随系统深浅色
+- `domStorageAccess(true)` 启用 localStorage
+
+Web 侧 `app/src/lib/download.ts` 检测 `window.fishNoteShell`：存在则走原生桥，否则走浏览器 `<a download>`。
+
+### Vite 构建
+
+- `base: './'` — 相对路径，兼容 file:// 协议
+- `manualChunks` — 手动拆分：`vendor-react`、`vendor-charts`、`vendor-markdown`、`vendor-motion`
+- `@` alias → `./src`
+
+### TypeScript
+
+- `erasableSyntaxOnly: true` — 禁止 enum/namespace 等非 erasable 语法
+- `verbatimModuleSyntax: true` — 强制 `import type` 明确类型导入
+
+### 路由
+
+使用 `HashRouter`（`react-router`），因为 `file://` 协议下 BrowserRouter 不可用。
+
+## 数据模型
+
+所有日期时间统一使用 ISO 字符串。详见 `app/src/types/index.ts`：
+
+- **Note**：便签（id、title、contentMarkdown、notebookId、kind、tags、color、pinned、deletedAt 等）
+- **Notebook**：笔记本（id、name、icon=lucide 图标名、count）
+- **Report**：AI 报告（type=daily/weekly/monthly、contentMarkdown、dateRange、sources）
+- **ChatMessage**：回忆书对话（role、content、thinkingSteps、sources）
+- **AISettings**：AI 配置（provider、baseURL、apiKey、model、temperature、mockEnabled）
+- **NoteKind** = `'daily' | 'weekly' | 'monthly' | 'memo'`
+- localStorage key 前缀统一为 `sg-`（各 store：`sg-notes`、`sg-settings`、`sg-chat`、`sg-reports`、`sg-stats`）
+
+## 脚本
+
+- `scripts/sync-webapp.sh` — 构建 Web 应用并同步产物到鸿蒙壳 resfile
+- `scripts/gen-icons.py` — 生成鸿蒙应用图标（#4A6FA5 背景 + 白色几何鱼），需 Pillow

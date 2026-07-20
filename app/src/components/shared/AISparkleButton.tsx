@@ -7,7 +7,7 @@ interface AISparkleButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   loading?: boolean
   /** 左侧 ✦ 图标，默认显示 */
   showIcon?: boolean
-  size?: 'md' | 'lg'
+  size?: 'sm' | 'md' | 'lg'
 }
 
 /**
@@ -28,7 +28,7 @@ const AISparkleButton = forwardRef<HTMLButtonElement, AISparkleButtonProps>(func
         'transition-shadow duration-200 hover:shadow-ai',
         'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ai-500',
         'disabled:cursor-not-allowed disabled:opacity-60',
-        size === 'md' ? 'h-9 px-4 text-[14px]' : 'h-[38px] px-5 text-[14px]',
+        size === 'sm' ? 'h-7 px-2.5 text-[12px]' : size === 'md' ? 'h-9 px-4 text-[14px]' : 'h-[38px] px-5 text-[14px]',
         className,
       )}
       style={{

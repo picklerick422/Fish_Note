@@ -28,6 +28,7 @@ export default function Settings() {
   const location = useLocation()
   const navigate = useNavigate()
   const [active, setActive] = useState<SectionId>('prefs')
+  const scrollingLockRef = useRef(false)
   const sectionRefs = useRef<Record<SectionId, HTMLElement | null>>({
     prefs: null,
     ai: null,
@@ -49,9 +50,10 @@ export default function Settings() {
     return () => clearTimeout(t)
   }, [location.hash])
 
-  // 滚动 spy：高亮当前可视分组
+  // 滚动 spy：高亮当前可视分组（程序化滚动期间暂停，避免与 layoutId 动画竞争）
   useEffect(() => {
     const onScroll = () => {
+      if (scrollingLockRef.current) return
       const probe = window.scrollY + 140
       let current: SectionId = 'prefs'
       for (const nav of NAV) {
@@ -66,9 +68,12 @@ export default function Settings() {
   }, [])
 
   const jump = (id: SectionId) => {
+    scrollingLockRef.current = true
     setActive(id)
     navigate(`#${id}`, { replace: true })
     sectionRefs.current[id]?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    // smooth scroll 大约需要 300-600ms，锁 800ms 确保动画完成后再恢复 spy
+    setTimeout(() => { scrollingLockRef.current = false }, 800)
   }
 
   return (

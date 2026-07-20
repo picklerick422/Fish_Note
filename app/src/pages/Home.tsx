@@ -98,13 +98,13 @@ export default function Home() {
         <button
           type="button"
           onClick={togglePalette}
-          className="flex h-9 w-[240px] items-center gap-2 rounded-r-sm border border-line bg-surface px-3 text-[13px] text-ink-400 shadow-card transition-colors hover:border-line-strong"
+          className="flex h-7 w-[280px] items-center gap-2 rounded-r-sm border border-line bg-surface px-3 text-[12px] text-ink-400 shadow-card transition-colors hover:border-line-strong"
         >
           <Search size={14} />
           <span className="flex-1 text-left">搜索便签、页面、AI 操作…</span>
           <Kbd className="h-5 text-[11px]">⌘K</Kbd>
         </button>
-        <AISparkleButton onClick={() => navigate('/notes?new=1')}>新建便签</AISparkleButton>
+        <AISparkleButton size="sm" onClick={() => navigate('/notes?new=1')}>新建便签</AISparkleButton>
       </>
     ),
   })

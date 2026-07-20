@@ -5,6 +5,9 @@
 @layer base {
   :root {
     /* ===== FishNote design tokens · light（雾蓝极简）===== */
+    --system-btn-width: 0px;   /* 系统三键宽度，ArkWeb 通过 runJavaScript 动态更新；浏览器默认 0 */
+    --system-btn-height: 44px; /* 系统三键高度，ArkWeb 动态更新；浏览器默认 44px */
+    --shell-drag-height: 0px;  /* 壳拖拽区高度，ArkWeb 动态更新 */
     --bg-base: #F5F6F8;
     --bg-subtle: #FAFBFC;
     --surface: #FFFFFF;
@@ -129,6 +132,11 @@
     font-family: "Noto Sans SC", system-ui, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
     font-size: 14px;
     line-height: 22px;
+  }
+
+  /* 阻止图片与链接拖拽（ArkWeb 中拖拽会显示 file:// 路径） */
+  img, a {
+    -webkit-user-drag: none;
   }
 
   /* 200ms color transition on theme switch */

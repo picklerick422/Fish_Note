@@ -89,12 +89,16 @@ export default function Layout() {
         <SidebarRail />
 
         <div className="pl-[5vw] lg:pl-[5vw]" style={{ minWidth: 0 }}>
-          {/* PageHeader：sticky 吸顶，滚动时出现 shadow-card */}
+          {/* PageHeader：sticky 吸顶，滚动时出现 shadow-card。整个 header 可拖拽（actions 区除外） */}
           <header
             className={`sticky top-0 z-30 flex items-center justify-between gap-[1vw] border-b border-line bg-base/90 px-[2vw] backdrop-blur transition-shadow duration-200 ${
               scrolled ? 'shadow-card' : ''
             }`}
-            style={{ height: 'clamp(56px, 5vh, 72px)' }}
+            style={{ height: 'var(--system-btn-height, 44px)', paddingRight: 'var(--system-btn-width, 0px)' }}
+            onPointerDown={() => {
+              const shell = (window as any).fishNoteShell
+              if (shell?.startMoving) shell.startMoving()
+            }}
           >
             <AnimatePresence mode="wait">
               <motion.div
@@ -103,13 +107,13 @@ export default function Layout() {
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ opacity: 0, transition: { duration: 0.12 } }}
                 transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
-                className="min-w-0"
+                className="min-w-0 select-none flex items-baseline gap-2.5"
               >
-                <h1 className="text-[24px] font-bold leading-8 text-ink-900">{header?.title ?? ''}</h1>
+                <h1 className="text-[22px] font-bold leading-7 text-ink-900">{header?.title ?? ''}</h1>
                 {header?.subtitle && (
-                  <p className="mt-0.5 truncate text-[12px] leading-[18px] tracking-[0.02em] text-ink-400">
+                  <span className="truncate text-[12px] leading-7 tracking-[0.02em] text-ink-400">
                     {header.subtitle}
-                  </p>
+                  </span>
                 )}
               </motion.div>
             </AnimatePresence>
@@ -119,6 +123,7 @@ export default function Layout() {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.06, duration: 0.24 }}
               className="flex shrink-0 items-center gap-3"
+              onPointerDown={(e) => e.stopPropagation()}
             >
               {header?.actions}
             </motion.div>

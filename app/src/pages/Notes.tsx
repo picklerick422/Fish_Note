@@ -115,7 +115,7 @@ export default function Notes() {
           <button
             type="button"
             onClick={togglePalette}
-            className="flex h-9 w-[220px] items-center gap-2 rounded-r-sm border border-line bg-surface px-3 text-[13px] text-ink-400 shadow-card transition-colors hover:border-line-strong"
+            className="flex h-7 w-[200px] items-center gap-2 rounded-r-sm border border-line bg-surface px-3 text-[12px] text-ink-400 shadow-card transition-colors hover:border-line-strong"
           >
             <Search size={14} />
             <span className="flex-1 text-left">搜索便签…</span>
@@ -124,13 +124,13 @@ export default function Notes() {
           <button
             type="button"
             onClick={() => navigate('/settings#ai')}
-            className="flex h-9 items-center gap-1.5 rounded-r-sm px-3 text-[13px] font-medium text-ai-500 transition-colors hover:bg-ai-50"
+            className="flex h-7 items-center gap-1.5 rounded-r-sm px-3 text-[12px] font-medium text-ai-500 transition-colors hover:bg-ai-50"
           >
-            <Sparkles size={15} />
+            <Sparkles size={14} />
             AI 设置
           </button>
-          <Button onClick={() => createNote()} className="h-9 rounded-r-sm">
-            <Plus size={16} />
+          <Button onClick={() => createNote()} size="sm" className="h-7 rounded-r-sm">
+            <Plus size={15} />
             新建便签
           </Button>
         </>

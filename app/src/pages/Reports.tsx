@@ -60,7 +60,7 @@ export default function Reports() {
   usePageHeader({
     title: '报告中心',
     subtitle: '日报成周，周成月，时间自有答案',
-    actions: <AISparkleButton onClick={() => openGenerate()}>生成报告</AISparkleButton>,
+    actions: <AISparkleButton size="sm" onClick={() => openGenerate()}>生成报告</AISparkleButton>,
   })
 
   /* 进入/离开阅读视图时回到顶部 */

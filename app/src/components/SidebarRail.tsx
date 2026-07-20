@@ -90,7 +90,7 @@ export default function SidebarRail() {
               </TooltipTrigger>
               <TooltipContent side="right" className="flex items-center gap-2">
                 <span>{item.label}</span>
-                <span className="text-[11px] text-white/60">{item.shortcut}</span>
+                <span className="text-[11px] text-white/60 dark:text-ink-400">{item.shortcut}</span>
               </TooltipContent>
             </Tooltip>
           ))}

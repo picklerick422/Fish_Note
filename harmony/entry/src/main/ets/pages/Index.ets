@@ -11,6 +11,7 @@ import { util } from '@kit.ArkTS'
 import { BusinessError } from '@kit.BasicServicesKit'
 import { hilog } from '@kit.PerformanceAnalysisKit'
 import { common } from '@kit.AbilityKit'
+import { window } from '@kit.ArkUI'
 
 const DOMAIN = 0x0000
 const TAG = 'FishNoteShell'
@@ -53,6 +54,36 @@ class FishNoteShell {
       hilog.error(DOMAIN, TAG, 'saveFile: shellContext not ready')
     }
   }
+
+  /** Web 端标题区域 pointerdown 时调用，触发系统级窗口拖拽 */
+  startMoving(): void {
+    try {
+      const w = AppStorage.get<window.Window>('mainWindow')
+      if (w) {
+        w.startMoving().catch(() => {
+          // 非自由窗口模式下失败，静默处理
+        })
+      }
+    } catch (_) {
+      // AppStorage 未就绪时忽略
+    }
+  }
+
+  /** Web 端主题切换时调用，同步系统状态栏/导航栏图标颜色 */
+  setDarkMode(isDark: boolean): void {
+    try {
+      const w = AppStorage.get<window.Window>('mainWindow')
+      if (w) {
+        const color = isDark ? '#FFFFFF' : '#000000'
+        w.setWindowSystemBarProperties({
+          statusBarContentColor: color,
+          navigationBarContentColor: color,
+        })
+      }
+    } catch (_) {
+      // 静默处理
+    }
+  }
 }
 
 @Entry
@@ -60,6 +91,8 @@ class FishNoteShell {
 struct Index {
   controller: webview.WebviewController = new webview.WebviewController()
   private shell: FishNoteShell = new FishNoteShell()
+  @StorageProp('titleButtonRect') btnRect: window.TitleButtonRect | undefined = undefined
+  @State buttonWidth: number = 138 // 默认三键宽度，由 onPageEnd 注入 Web 端
 
   aboutToAppear(): void {
     // getContext(this) 自 API 18 废弃，改用 UIContext.getHostContext
@@ -87,19 +120,14 @@ struct Index {
   }
 
   build() {
-    Column() {
-      // src 设为空串，由 onControllerAttached 中 loadUrl 加载
-      // 原因：resource://rawfile 协议的 origin 为 null，ArkWeb CORS 策略会拦截子资源
-      // （JS/CSS），导致白屏。改用 resfile + file:// + setPathAllowingUniversalAccess
-      // 避免 CORS 限制。
+    Stack() {
+      // ===== 底层：WebView 全屏填充 =====
       Web({ src: '', controller: this.controller })
         .onControllerAttached(() => {
           try {
             const ctx = this.getUIContext().getHostContext()
             if (ctx) {
-              // 设置路径白名单，允许 file:// 协议跨域访问 resfile 目录下的资源
               this.controller.setPathAllowingUniversalAccess([ctx.resourceDir])
-              // 加载 resfile/webapp/index.html（由 scripts/sync-webapp.sh 同步）
               this.controller.loadUrl('file://' + ctx.resourceDir + '/webapp/index.html')
               hilog.info(DOMAIN, TAG, 'loading webapp from resfile: %{public}s/webapp/index.html', ctx.resourceDir)
             }
@@ -108,24 +136,23 @@ struct Index {
             hilog.error(DOMAIN, TAG, 'onControllerAttached failed: %{public}d %{public}s', err.code, err.message)
           }
         })
-        .fileAccess(true) // file:// 协议需要，且 setPathAllowingUniversalAccess 依赖于它
-        .domStorageAccess(true) // localStorage 持久化（默认 false，必须开启）
-        .darkMode(WebDarkMode.Auto) // prefers-color-scheme 跟随系统深浅色
+        .fileAccess(true)
+        .domStorageAccess(true)
+        .darkMode(WebDarkMode.Auto)
         .javaScriptAccess(true)
-        .zoomAccess(false) // 桌面应用禁用手势缩放
-        // 单常驻页面、Web 组件与进程同生命周期，故豁免 deleteJavaScriptRegister 反注册
+        .zoomAccess(false)
         .javaScriptProxy({
           object: this.shell,
           name: 'fishNoteShell',
-          methodList: ['saveFile'],
+          methodList: ['saveFile', 'startMoving', 'setDarkMode'],
           controller: this.controller,
         })
         .onShowFileSelector((event) => {
           if (!event) {
-            return false // 无事件对象时交还系统默认处理，避免 input 挂起
+            return false
           }
           this.pickFile(event)
-          return true // 返回 true 表示应用接管文件选择
+          return true
         })
         .onErrorReceive((event) => {
           if (event) {
@@ -133,10 +160,46 @@ struct Index {
               event.error.getErrorCode(), event.error.getErrorInfo())
           }
         })
+        .onPageEnd(() => {
+          // 注入 CSS 变量供 Web 端自适应避让（三键宽度/高度 + 紧贴边距）
+          const btnW = (this.btnRect?.width ?? 138) + 12
+          const btnH = (this.btnRect?.height ?? 40) + 4
+          this.buttonWidth = btnW
+          try {
+            this.controller.runJavaScript(
+              `(function(){var s=document.documentElement.style;s.setProperty('--system-btn-width','${btnW}px');s.setProperty('--system-btn-height','${btnH}px');s.setProperty('--shell-drag-height','12px');})()`
+            )
+          } catch (_) { /* ignore */ }
+        })
         .width('100%')
         .height('100%')
+
+      // ===== 顶层：窄条拖拽回落层（12vp，仅覆盖标题栏极顶部，Web 端标题区域由 JS bridge 精准处理） =====
+      Row() {
+        // 左 35%：拖拽手柄——不可见，对应各页面标题文字区域顶部
+        Blank()
+          .layoutWeight(35)
+          .onTouch((event: TouchEvent) => {
+            if (event.type === TouchType.Down) {
+              const w = AppStorage.get<window.Window>('mainWindow')
+              if (w) {
+                w.startMoving().catch(() => {
+                  // 非自由窗口模式下失败，静默处理
+                })
+              }
+            }
+          })
+        // 右 65%：系统三键 + 页面操作区，事件穿透到 WebView
+        Blank()
+          .layoutWeight(65)
+          .hitTestBehavior(HitTestMode.None)
+      }
+      .width('100%')
+      .height(12)
     }
+    .alignContent(Alignment.Top) // 拖拽 Row 对齐到顶部，WebView 填满
     .width('100%')
     .height('100%')
+    .expandSafeArea([SafeAreaType.SYSTEM], [SafeAreaEdge.TOP, SafeAreaEdge.BOTTOM])
   }
 }
