@@ -17,6 +17,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSeparator,
+  ContextMenuTrigger,
+} from '@/components/ui/context-menu'
 import { relTime } from '@/lib/date'
 import { notify } from '@/lib/toast'
 import { useNotesStore } from '@/store/useNotesStore'
@@ -47,47 +54,71 @@ export default function TrashList({ notes }: TrashListProps) {
   return (
     <div className="flex flex-col gap-2 p-3">
       {notes.map((note, i) => (
-        <motion.div
-          key={note.id}
-          layout="position"
-          initial={{ y: 8, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ height: 0, opacity: 0, overflow: 'hidden' }}
-          transition={{ delay: i * 0.04, duration: 0.26, ease: [0.16, 1, 0.3, 1] }}
-          className="rounded-r-md border border-line bg-surface p-3"
-        >
-          <div className="flex items-center gap-1.5">
-            <Tag type={note.kind} className="h-5 px-2 text-[11px]" />
-            <span className="text-[11px] text-ink-300">删除于 {note.deletedAt ? relTime(note.deletedAt) : '—'}</span>
-          </div>
-          <div className="mt-1.5 truncate text-[14px] font-semibold leading-5 text-ink-500 line-through decoration-ink-300/60">
-            {note.title}
-          </div>
-          <div className="mt-1 line-clamp-1 text-[12px] leading-[18px] text-ink-400">
-            {plainExcerpt(note.contentMarkdown, 60)}
-          </div>
-          <div className="mt-2 flex items-center gap-2">
-            <button
-              type="button"
+        <ContextMenu key={note.id}>
+          <ContextMenuTrigger asChild>
+            <motion.div
+              layout="position"
+              initial={{ y: 8, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ height: 0, opacity: 0, overflow: 'hidden' }}
+              transition={{ delay: i * 0.04, duration: 0.26, ease: [0.16, 1, 0.3, 1] }}
+              className="rounded-r-md border border-line bg-surface p-3"
+            >
+              <div className="flex items-center gap-1.5">
+                <Tag type={note.kind} className="h-5 px-2 text-[11px]" />
+                <span className="text-[11px] text-ink-300">删除于 {note.deletedAt ? relTime(note.deletedAt) : '—'}</span>
+              </div>
+              <div className="mt-1.5 truncate text-[14px] font-semibold leading-5 text-ink-500 line-through decoration-ink-300/60">
+                {note.title}
+              </div>
+              <div className="mt-1 line-clamp-1 text-[12px] leading-[18px] text-ink-400">
+                {plainExcerpt(note.contentMarkdown, 60)}
+              </div>
+              <div className="mt-2 flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    restoreNote(note.id)
+                    notify.success(`已恢复「${note.title}」`)
+                  }}
+                  className="flex h-7 items-center gap-1 rounded-r-sm px-2 text-[12px] font-medium text-brand-600 transition-colors hover:bg-brand-50"
+                >
+                  <RotateCcw size={12} />
+                  恢复
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPendingDestroy(note)}
+                  className="flex h-7 items-center gap-1 rounded-r-sm px-2 text-[12px] text-red transition-colors hover:bg-red-soft"
+                >
+                  <Trash2 size={12} />
+                  彻底删除
+                </button>
+              </div>
+            </motion.div>
+          </ContextMenuTrigger>
+          <ContextMenuContent className="w-36 rounded-r-md">
+            <ContextMenuItem
               onClick={() => {
                 restoreNote(note.id)
                 notify.success(`已恢复「${note.title}」`)
               }}
-              className="flex h-7 items-center gap-1 rounded-r-sm px-2 text-[12px] font-medium text-brand-600 transition-colors hover:bg-brand-50"
+              className="gap-2 text-[13px]"
             >
-              <RotateCcw size={12} />
+              <RotateCcw size={14} />
               恢复
-            </button>
-            <button
-              type="button"
+            </ContextMenuItem>
+            <ContextMenuSeparator />
+            <ContextMenuItem
+              variant="destructive"
               onClick={() => setPendingDestroy(note)}
-              className="flex h-7 items-center gap-1 rounded-r-sm px-2 text-[12px] text-red transition-colors hover:bg-red-soft"
+              className="gap-2 text-[13px]"
             >
-              <Trash2 size={12} />
+              <Trash2 size={14} />
               彻底删除
-            </button>
-          </div>
-        </motion.div>
+            </ContextMenuItem>
+          </ContextMenuContent>
+        </ContextMenu>
       ))}
 
       {/* 彻底删除二次确认 */}

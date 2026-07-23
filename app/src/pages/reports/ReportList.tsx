@@ -109,8 +109,8 @@ export default function ReportList({ reports, highlightId, onOpen, onRegenerate,
         image="./empty-reports.svg"
         imageWidth={280}
         title="还没有报告"
-        description="记录满 3 篇日报，就能生成第一篇周报"
-        action={<AISparkleButton onClick={onGenerate}>立即生成</AISparkleButton>}
+        description="写几条便签后，点击下方按钮让 AI 帮你汇总成日报。日报积累多了，还能生成周报和月报。"
+        action={<AISparkleButton onClick={onGenerate}>生成第一篇报告</AISparkleButton>}
         className="py-20"
       />
     )

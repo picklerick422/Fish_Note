@@ -2,6 +2,7 @@ import { AbilityConstant, ConfigurationConstant, UIAbility, Want } from '@kit.Ab
 import { BusinessError } from '@kit.BasicServicesKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { window } from '@kit.ArkUI';
+import { preferences } from '@kit.ArkData';
 
 const DOMAIN = 0x0000;
 
@@ -22,6 +23,9 @@ export default class EntryAbility extends UIAbility {
   onWindowStageCreate(windowStage: window.WindowStage): void {
     // Main window is created, set main page for this ability
     hilog.info(DOMAIN, 'testTag', '%{public}s', 'Ability onWindowStageCreate');
+
+    // 在回调外保存上下文引用，供异步回调内使用
+    const appContext = this.context;
 
     windowStage.loadContent('pages/Index', async (err) => {
       if (err.code) {
@@ -59,6 +63,32 @@ export default class EntryAbility extends UIAbility {
         }
         // 窗口引用存入 AppStorage，供 Index.ets 拖拽使用
         AppStorage.setOrCreate<window.Window>('mainWindow', mainWindow);
+
+        // 窗口尺寸持久化：记住用户手动调整的尺寸
+        try {
+          const prefs: preferences.Preferences = await preferences.getPreferences(appContext, 'fishnote_window');
+          const savedWidth: number = prefs.getSync('winWidth', 0) as number;
+          const savedHeight: number = prefs.getSync('winHeight', 0) as number;
+          const status: window.WindowStatusType = await mainWindow.getWindowStatus();
+
+          if (status === window.WindowStatusType.FLOATING) {
+            if (savedWidth >= 900 && savedHeight >= 600) {
+              // 恢复上次保存的窗口尺寸
+              await mainWindow.resizeAsync(savedWidth, savedHeight);
+              hilog.info(DOMAIN, 'testTag', 'Window restored to %{public}d×%{public}d', savedWidth, savedHeight);
+            }
+          }
+
+          // 监听用户拖拽调整窗口 → 保存新尺寸
+          mainWindow.on('windowSizeChange', (size: window.Size) => {
+            prefs.putSync('winWidth', size.width);
+            prefs.putSync('winHeight', size.height);
+            prefs.flush(); // 异步落盘
+          });
+        } catch (e3) {
+          hilog.error(DOMAIN, 'testTag', 'Window size persistence failed: %{public}s', JSON.stringify(e3));
+        }
+
         hilog.info(DOMAIN, 'testTag', 'Window configured for immersive edge-to-edge');
       } catch (e) {
         const err2 = e as BusinessError;

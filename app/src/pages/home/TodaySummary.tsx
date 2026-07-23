@@ -38,7 +38,7 @@ function DigestColumn({
   const extra = items.length - 3
 
   return (
-    <div className="flex-1 px-5 first:pl-0 last:pr-0">
+    <div className="min-w-0 flex-1 px-5 first:pl-0 last:pr-0">
       <div className="flex items-center gap-2">
         <span className="flex h-6 w-6 items-center justify-center rounded-full" style={{ background: col.bg }}>
           <col.icon size={13} style={{ color: col.color }} strokeWidth={2.5} />
@@ -70,7 +70,7 @@ function DigestColumn({
                   initial={{ opacity: 0, y: 4 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 + i * 0.06, duration: 0.24 }}
-                  className="flex items-center gap-2"
+                  className="flex min-w-0 items-center gap-2"
                 >
                   <span className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ background: col.color }} />
                   <span className="truncate text-[12px] leading-[18px] text-ink-500">{item}</span>

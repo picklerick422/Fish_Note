@@ -2,6 +2,7 @@
  * OpenAI 兼容 Chat Completions Provider（fetch + SSE 流式）。
  * 读取 useSettingsStore 中的 baseURL / apiKey / model / temperature。
  */
+import { format } from 'date-fns'
 import type { NoteSource, ThinkingStep } from '@/types'
 import type {
   AIChatMessage,
@@ -82,16 +83,28 @@ class OpenAIProvider implements AIProvider {
   }
 
   structure(raw: string, opts?: StructureOptions): Promise<string> {
-    const target = opts?.target === 'memo' ? '随手记' : '日报'
+    const today = format(new Date(), 'yyyy年M月d日')
+    const isMemo = opts?.target === 'memo'
+    const systemPrompt = isMemo
+        ? `你是「FishNote」的整理助手。今天是${today}。把用户的碎碎念整理成一篇自然的随手记。\n` +
+          '随手记风格要求：\n' +
+          '- 像随手写在便签上的个人笔记，语气轻松自然，保留用户的口语化表达和情绪\n' +
+          '- 用 # 标题概括核心内容（10字以内）\n' +
+          '- 正文用一两段流畅的短文字把要点串起来，不要用无序列表\n' +
+          '- 如果用户提到时间/地点/人物，保留这些细节\n' +
+          '- 末尾附 1-3 个 #标签\n' +
+          '只输出 Markdown，不要解释。'
+        : `你是「FishNote」的整理助手。今天是${today}。把用户的碎碎念整理成结构化 Markdown 日报。\n` +
+          '日报格式要求：\n' +
+          `- 标题：## ${format(new Date(), 'M月d日')} · 日报（不要编造序号）\n` +
+          '- ### ✅ 完成事项（润色为成果导向表述，每条一行无序列表）\n' +
+          '- ### ⚠️ 问题记录（阻塞、风险、待确认事项，没有则写"暂无"）\n' +
+          '- ### 📌 明日计划（未完成或待推进的事项，没有则写"暂无"）\n' +
+          '- 末尾附 2-4 个 #标签\n' +
+          '只输出 Markdown，不要解释。'
     return callChat(
       [
-        {
-          role: 'system',
-          content:
-            `你是「FishNote」的整理助手。把用户的碎碎念整理成结构化 Markdown ${target}。\n` +
-            '日报格式：## M月d日 · 日报 标题，然后三个小节：### ✅ 完成事项、### ⚠️ 问题记录、### 📌 明日计划，' +
-            '每节用无序列表，最后附 2-4 个 #标签。随手记格式：# 标题 + 要点列表 + 标签。只输出 Markdown，不要解释。',
-        },
+        { role: 'system', content: systemPrompt },
         { role: 'user', content: raw },
       ],
       opts,

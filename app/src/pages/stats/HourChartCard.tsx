@@ -54,14 +54,14 @@ export default function HourChartCard({ range, baseDelay = 0.3 }: HourChartCardP
         )}
       </div>
 
-      <div className="mt-4 h-[200px]">
+      <div className="mt-4 h-[200px] [&_svg]:!overflow-visible">
         {tooSparse || total === 0 ? (
           <div className="flex h-full flex-col items-center justify-center gap-2 rounded-r-md border border-dashed border-line-strong">
             <span className="text-[13px] text-ink-400">数据还太少，再记几天就能看到趋势啦</span>
           </div>
         ) : (
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={hours} margin={{ top: 8, right: 4, bottom: 0, left: -26 }} barCategoryGap="28%">
+            <BarChart data={hours} margin={{ top: 8, right: 4, bottom: 0, left: -26 }} barCategoryGap="28%" style={{ overflow: 'visible' }}>
               <XAxis
                 dataKey="h"
                 tickLine={false}

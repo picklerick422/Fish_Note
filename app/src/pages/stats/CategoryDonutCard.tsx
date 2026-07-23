@@ -45,9 +45,9 @@ export default function CategoryDonutCard({ baseDelay = 0.26 }: CategoryDonutCar
       <h3 className="text-[16px] font-semibold leading-6 text-ink-900">分类分布</h3>
 
       <div className="mt-2 flex items-center">
-        <div className="relative h-[190px] w-[55%] shrink-0">
+        <div className="relative h-[190px] w-[55%] shrink-0 [&_svg]:!overflow-visible">
           <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
+            <PieChart style={{ overflow: 'visible' }}>
               <Tooltip
                 content={({ active, payload }) => {
                   const p = payload?.[0]

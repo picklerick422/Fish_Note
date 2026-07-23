@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { NavLink, useNavigate } from 'react-router'
 import { AnimatePresence, motion } from 'framer-motion'
 import {
@@ -6,6 +6,7 @@ import {
   FileBarChart2,
   LayoutDashboard,
   MessagesSquare,
+  Monitor,
   Moon,
   NotebookPen,
   Settings2,
@@ -15,6 +16,18 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { cn } from '@/lib/utils'
 import { useSettingsStore } from '@/store/useSettingsStore'
 import { computeStreak, useStatsStore, xpForNext } from '@/store/useStatsStore'
+import { loadLocalPrefs, saveLocalPrefs, type LocalPrefs } from '@/pages/settings/localPrefs'
+import { triggerThemeRipple } from '@/components/ThemeRipple'
+
+type ThemeMode = LocalPrefs['themeMode']
+
+const THEME_CYCLE: ThemeMode[] = ['light', 'dark', 'system']
+const THEME_ICON: Record<ThemeMode, typeof Sun> = { light: Sun, dark: Moon, system: Monitor }
+const THEME_TOOLTIP: Record<ThemeMode, string> = {
+  light: '浅色模式',
+  dark: '深色模式',
+  system: '跟随系统',
+}
 
 const NAV_ITEMS = [
   { to: '/', label: '工作台', icon: LayoutDashboard, shortcut: 'G then H', end: true },
@@ -28,12 +41,38 @@ const NAV_ITEMS = [
 export default function SidebarRail() {
   const navigate = useNavigate()
   const theme = useSettingsStore((s) => s.theme)
-  const toggleTheme = useSettingsStore((s) => s.toggleTheme)
   const userName = useSettingsStore((s) => s.userName)
   const level = useStatsStore((s) => s.level)
   const xp = useStatsStore((s) => s.xp)
   const activity = useStatsStore((s) => s.activity)
   const [avatarOpen, setAvatarOpen] = useState(false)
+
+  const [themeMode, setThemeMode] = useState<ThemeMode>(loadLocalPrefs().themeMode)
+
+  // 设置页改动主题时同步到边栏（store.theme 变化 → 读取最新 localStorage）
+  useEffect(() => {
+    setThemeMode(loadLocalPrefs().themeMode)
+  }, [theme])
+
+  const cycleTheme = useCallback((e: React.MouseEvent) => {
+    const current = loadLocalPrefs().themeMode
+    const idx = THEME_CYCLE.indexOf(current)
+    const next = THEME_CYCLE[(idx + 1) % THEME_CYCLE.length]
+    const prefs = loadLocalPrefs()
+    saveLocalPrefs({ ...prefs, themeMode: next })
+    setThemeMode(next) // 强制本地重渲染（即使 store 值不变，图标也能更新）
+    // 确定实际切换的目标主题
+    let target: 'light' | 'dark'
+    if (next === 'light') target = 'light'
+    else if (next === 'dark') target = 'dark'
+    else target = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+    // 触发涟漪动画，实际 setTheme 由 ThemeRipple 的 onMidpoint 回调执行
+    triggerThemeRipple(e.clientX, e.clientY, target)
+  }, [])
+
+  const ThemeIcon = THEME_ICON[themeMode]
+  const themeLabel =
+    themeMode === 'system' ? `跟随系统（当前${theme === 'dark' ? '深色' : '浅色'}）` : THEME_TOOLTIP[themeMode]
 
   return (
     <TooltipProvider delayDuration={300}>
@@ -90,7 +129,7 @@ export default function SidebarRail() {
               </TooltipTrigger>
               <TooltipContent side="right" className="flex items-center gap-2">
                 <span>{item.label}</span>
-                <span className="text-[11px] text-white/60 dark:text-ink-400">{item.shortcut}</span>
+                <span className="text-[11px] text-ink-400">{item.shortcut}</span>
               </TooltipContent>
             </Tooltip>
           ))}
@@ -103,21 +142,24 @@ export default function SidebarRail() {
               <button
                 type="button"
                 aria-label="切换主题"
-                onClick={toggleTheme}
+                onClick={cycleTheme}
                 className="flex h-11 w-11 items-center justify-center rounded-r-md text-ink-400 transition-colors duration-150 hover:bg-subtle hover:text-ink-900"
               >
                 <motion.span
-                  key={theme}
+                  key={themeMode}
                   initial={{ rotate: -180, opacity: 0 }}
                   animate={{ rotate: 0, opacity: 1 }}
                   transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
                   className="flex"
                 >
-                  {theme === 'light' ? <Moon size={20} strokeWidth={1.8} /> : <Sun size={20} strokeWidth={1.8} />}
+                  <ThemeIcon size={20} strokeWidth={1.8} />
                 </motion.span>
               </button>
             </TooltipTrigger>
-            <TooltipContent side="right">{theme === 'light' ? '切换到深色' : '切换到浅色'}</TooltipContent>
+            <TooltipContent side="right">
+              {themeLabel}
+              <span className="ml-1 text-[11px] text-ink-400">· 点击切换</span>
+            </TooltipContent>
           </Tooltip>
 
           <Tooltip>

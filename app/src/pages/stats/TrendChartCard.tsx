@@ -123,14 +123,14 @@ export default function TrendChartCard({ range, baseDelay = 0.2 }: TrendChartCar
         />
       </div>
 
-      <div className="mt-4 h-[240px]">
+      <div className="mt-4 h-[240px] [&_svg]:!overflow-visible">
         {tooSparse ? (
           <div className="flex h-full flex-col items-center justify-center gap-2 rounded-r-md border border-dashed border-line-strong">
             <span className="text-[13px] text-ink-400">数据还太少，再记几天就能看到趋势啦</span>
           </div>
         ) : (
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={series} margin={{ top: 8, right: 8, bottom: 0, left: -18 }}>
+            <AreaChart data={series} margin={{ top: 8, right: 8, bottom: 0, left: -18 }} style={{ overflow: 'visible' }}>
               <defs>
                 <linearGradient id="trend-fill" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="var(--brand-500)" stopOpacity={0.2} />

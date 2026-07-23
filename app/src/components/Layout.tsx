@@ -107,11 +107,11 @@ export default function Layout() {
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ opacity: 0, transition: { duration: 0.12 } }}
                 transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
-                className="min-w-0 select-none flex items-baseline gap-2.5"
+                className="min-w-0 select-none flex items-end gap-2.5"
               >
-                <h1 className="text-[22px] font-bold leading-7 text-ink-900">{header?.title ?? ''}</h1>
+                <h1 className="text-[26px] font-bold leading-7 text-ink-900">{header?.title ?? ''}</h1>
                 {header?.subtitle && (
-                  <span className="truncate text-[12px] leading-7 tracking-[0.02em] text-ink-400">
+                  <span className="truncate text-[13px] leading-none tracking-[0.02em] text-ink-400">
                     {header.subtitle}
                   </span>
                 )}

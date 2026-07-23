@@ -3,6 +3,7 @@ import { Link } from 'react-router'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowRight, Check, ChevronDown, Eye, EyeOff, Loader2, RefreshCw, Sparkles, X } from 'lucide-react'
 import { Slider } from '@/components/ui/slider'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { notify } from '@/lib/toast'
 import { cn } from '@/lib/utils'
 import { mockEngine } from '@/ai/mockEngine'
@@ -298,18 +299,18 @@ export default function AISection() {
                         transition={{ duration: 0.2 }}
                         className="relative flex-1"
                       >
-                        <select
-                          value={draft.model}
-                          onChange={(e) => patch({ model: e.target.value })}
-                          className={cn(inputCls, 'appearance-none pr-8 font-mono')}
-                        >
-                          {models.map((m) => (
-                            <option key={m} value={m}>
-                              {m}
-                            </option>
-                          ))}
-                        </select>
-                        <ChevronDown size={14} className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-ink-400" />
+                        <Select value={draft.model} onValueChange={(v) => patch({ model: v })}>
+                          <SelectTrigger className="h-[38px] w-full rounded-r-sm border-line-strong bg-surface text-[13px] text-ink-700 font-mono">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent className="z-50 max-h-[280px] min-w-[200px] rounded-r-md border-line bg-surface text-[13px] shadow-pop">
+                            {models.map((m) => (
+                              <SelectItem key={m} value={m} className="font-mono cursor-pointer">
+                                {m}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </motion.span>
                     ) : (
                       <input

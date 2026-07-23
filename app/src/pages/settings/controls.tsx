@@ -4,7 +4,13 @@
  */
 import { useEffect, type ReactNode } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { ChevronDown } from 'lucide-react'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { cn } from '@/lib/utils'
 
 /* ---------- SettingCard：白底 r-lg 1px border padding 24，标题 h3 + 副 caption ---------- */
@@ -106,7 +112,7 @@ export function SgSwitch({
   )
 }
 
-/* ---------- SgSelect：r-sm 白底下拉 ---------- */
+/* ---------- SgSelect：使用 shadcn Select 的下拉组件 ---------- */
 export function SgSelect<T extends string>({
   value,
   options,
@@ -123,25 +129,25 @@ export function SgSelect<T extends string>({
   'aria-label'?: string
 }) {
   return (
-    <span className={cn('relative inline-flex items-center', className)}>
-      <select
-        value={value}
+    <Select value={value} onValueChange={(v) => onChange(v as T)} disabled={disabled}>
+      <SelectTrigger
         aria-label={ariaLabel}
-        disabled={disabled}
-        onChange={(e) => onChange(e.target.value as T)}
         className={cn(
-          'h-[38px] appearance-none rounded-r-sm border border-line-strong bg-surface pl-3 pr-8 text-[13px] text-ink-700 outline-none transition-colors',
-          'hover:border-ink-300 focus:border-brand-500 disabled:cursor-not-allowed disabled:opacity-50',
+          'h-[38px] min-w-[120px] gap-2 rounded-r-sm border-line-strong bg-surface text-[13px] text-ink-700',
+          'hover:border-ink-300 focus:border-brand-500 data-[placeholder]:text-ink-300',
+          className,
         )}
       >
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent className="z-50 min-w-[120px] rounded-r-md border-line bg-surface text-[13px] shadow-pop">
         {options.map((o) => (
-          <option key={o.value} value={o.value}>
+          <SelectItem key={o.value} value={o.value} className="cursor-pointer">
             {o.label}
-          </option>
+          </SelectItem>
         ))}
-      </select>
-      <ChevronDown size={14} className="pointer-events-none absolute right-2.5 text-ink-400" />
-    </span>
+      </SelectContent>
+    </Select>
   )
 }
 
