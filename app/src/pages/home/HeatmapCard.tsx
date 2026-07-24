@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router'
 import { motion } from 'framer-motion'
 import { Flame } from 'lucide-react'
 import Heatmap, { HEAT_LEVELS } from '@/components/shared/Heatmap'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { format, subDays } from 'date-fns'
 import { computeStreak, useStatsStore } from '@/store/useStatsStore'
 
@@ -41,18 +42,21 @@ export default function HeatmapCard() {
       <div className="flex items-center justify-between">
         <h3 className="text-[16px] font-semibold leading-6 text-ink-900">活跃热力图</h3>
         <div className="flex items-center gap-4">
-          <select
-            value={year}
-            onChange={(e) => setYear(Number(e.target.value))}
-            aria-label="选择年份"
-            className="h-7 cursor-pointer rounded-r-sm border border-line-strong bg-surface px-2 text-[12px] text-ink-700 outline-none focus:border-brand-500"
-          >
-            {[thisYear, thisYear - 1].map((y) => (
-              <option key={y} value={y}>
-                {y}
-              </option>
-            ))}
-          </select>
+          <Select value={String(year)} onValueChange={(v) => setYear(Number(v))}>
+            <SelectTrigger
+              aria-label="选择年份"
+              className="h-7 w-[90px] gap-1 rounded-r-sm border-line-strong bg-surface text-[12px] text-ink-700 focus:border-brand-500"
+            >
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent className="z-50 min-w-[90px] rounded-r-md border-line bg-surface text-[13px] shadow-pop">
+              {[thisYear, thisYear - 1].map((y) => (
+                <SelectItem key={y} value={String(y)} className="cursor-pointer">
+                  {y}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <div className="flex items-center gap-1.5">
             <span className="text-[12px] tracking-[0.02em] text-ink-400">少</span>
             {HEAT_LEVELS.map((c, i) => (

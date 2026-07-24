@@ -135,7 +135,17 @@ export default function EditorPane({ note, onRequestNew, focusMode, onToggleFocu
   const [dirty, setDirty] = useState(false)
   const [saveState, setSaveState] = useState<'saved' | 'saving'>('saved')
   const [cursor, setCursor] = useState({ ln: 1, col: 1 })
-  const [viewMode, setViewMode] = useState<ViewMode>('split')
+  const [viewMode, setViewMode] = useState<ViewMode>(() => {
+    try {
+      const raw = localStorage.getItem('sg-local-prefs')
+      if (raw) {
+        const prefs = JSON.parse(raw)
+        const dv = prefs?.editor?.defaultView
+        if (dv === 'edit' || dv === 'preview' || dv === 'split') return dv
+      }
+    } catch { /* ignore corrupt localPrefs */ }
+    return 'split'
+  })
   const [aiEnabled, setAiEnabled] = useState(() => localStorage.getItem('sg-ai-completion') !== 'off')
   const [ghostTitle, setGhostTitle] = useState<string | null>(null)
   const [task, setTask] = useState<AITask | null>(null)

@@ -104,8 +104,7 @@ function Heatmap({
                   onMouseEnter={(e) => {
                     const el = e.currentTarget as HTMLElement
                     const rect = el.getBoundingClientRect()
-                    const parent = el.closest('[data-heatmap]')!.getBoundingClientRect()
-                    setHover({ info, x: rect.left - parent.left + cell / 2, y: rect.top - parent.top })
+                    setHover({ info, x: rect.left + cell / 2, y: rect.top })
                   }}
                   onMouseLeave={() => setHover(null)}
                   onClick={() => info.inYear && onCellClick?.(info.date)}
@@ -133,7 +132,7 @@ function Heatmap({
       {/* hover tooltip */}
       {hover && hover.info.inYear && !empty && (
         <div
-          className="pointer-events-none absolute z-20 -translate-x-1/2 whitespace-nowrap rounded-r-sm px-2 py-1 text-[12px] leading-4 text-white"
+          className="pointer-events-none fixed z-50 -translate-x-1/2 whitespace-nowrap rounded-r-sm px-2 py-1 text-[12px] leading-4 text-white"
           style={{
             left: hover.x,
             top: hover.y - 8,

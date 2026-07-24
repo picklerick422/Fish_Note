@@ -23,6 +23,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from '@/components/ui/context-menu'
 import { notify } from '@/lib/toast'
 import { cn } from '@/lib/utils'
 import { useNotesStore } from '@/store/useNotesStore'
@@ -214,52 +220,80 @@ export default function NotebookNav({ sel, onSelect, notebooks, counts }: Notebo
             )
           }
           return (
-            <NavRow
-              key={nb.id}
-              icon={notebookIcon(nb.icon)}
-              label={nb.name}
-              count={nb.count}
-              active={active}
-              onClick={() => onSelect({ t: 'notebook', id: nb.id })}
-              actions={
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <button
-                      type="button"
-                      aria-label="笔记本操作"
-                      onClick={(e) => e.stopPropagation()}
-                      className="flex h-5 w-5 items-center justify-center rounded-r-sm text-ink-300 opacity-0 transition-opacity hover:bg-line hover:text-ink-700 group-hover:opacity-100"
-                    >
-                      <MoreHorizontal size={14} />
-                    </button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start" className="w-36 rounded-r-md" onClick={(e) => e.stopPropagation()}>
-                    <DropdownMenuItem
-                      onClick={() => {
-                        setRenamingId(nb.id)
-                        setRenameValue(nb.name)
-                      }}
-                      className="gap-2 text-[13px]"
-                    >
-                      <Pencil size={13} />
-                      重命名
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      disabled={notebooks.length <= 1}
-                      onClick={() => {
-                        deleteNotebook(nb.id)
-                        if (active) onSelect({ t: 'quick', k: 'all' })
-                        notify.success(`已删除笔记本「${nb.name}」，便签已移至「${notebooks.find((x) => x.id !== nb.id)?.name ?? ''}」`)
-                      }}
-                      className="gap-2 text-[13px] text-red focus:text-red"
-                    >
-                      <Trash2 size={13} />
-                      删除
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              }
-            />
+            <ContextMenu key={nb.id}>
+              <ContextMenuTrigger asChild>
+                <NavRow
+                  icon={notebookIcon(nb.icon)}
+                  label={nb.name}
+                  count={nb.count}
+                  active={active}
+                  onClick={() => onSelect({ t: 'notebook', id: nb.id })}
+                  actions={
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <button
+                          type="button"
+                          aria-label="笔记本操作"
+                          onClick={(e) => e.stopPropagation()}
+                          className="flex h-5 w-5 items-center justify-center rounded-r-sm text-ink-300 opacity-0 transition-opacity hover:bg-line hover:text-ink-700 group-hover:opacity-100"
+                        >
+                          <MoreHorizontal size={14} />
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="start" className="w-36 rounded-r-md" onClick={(e) => e.stopPropagation()}>
+                        <DropdownMenuItem
+                          onClick={() => {
+                            setRenamingId(nb.id)
+                            setRenameValue(nb.name)
+                          }}
+                          className="gap-2 text-[13px]"
+                        >
+                          <Pencil size={13} />
+                          重命名
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          disabled={notebooks.length <= 1}
+                          onClick={() => {
+                            deleteNotebook(nb.id)
+                            if (active) onSelect({ t: 'quick', k: 'all' })
+                            notify.success(`已删除笔记本「${nb.name}」，便签已移至「${notebooks.find((x) => x.id !== nb.id)?.name ?? ''}」`)
+                          }}
+                          className="gap-2 text-[13px] text-red focus:text-red"
+                        >
+                          <Trash2 size={13} />
+                          删除
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  }
+                />
+              </ContextMenuTrigger>
+              <ContextMenuContent className="w-36 rounded-r-md" onClick={(e) => e.stopPropagation()}>
+                <ContextMenuItem
+                  onClick={() => {
+                    setRenamingId(nb.id)
+                    setRenameValue(nb.name)
+                  }}
+                  className="gap-2 text-[13px]"
+                >
+                  <Pencil size={13} />
+                  重命名
+                </ContextMenuItem>
+                <ContextMenuItem
+                  disabled={notebooks.length <= 1}
+                  variant="destructive"
+                  onClick={() => {
+                    deleteNotebook(nb.id)
+                    if (active) onSelect({ t: 'quick', k: 'all' })
+                    notify.success(`已删除笔记本「${nb.name}」，便签已移至「${notebooks.find((x) => x.id !== nb.id)?.name ?? ''}」`)
+                  }}
+                  className="gap-2 text-[13px]"
+                >
+                  <Trash2 size={13} />
+                  删除
+                </ContextMenuItem>
+              </ContextMenuContent>
+            </ContextMenu>
           )
         })}
         {creating && (

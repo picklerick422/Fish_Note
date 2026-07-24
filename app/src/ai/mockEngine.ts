@@ -145,15 +145,16 @@ ${tags.map((t) => `#${t}`).join(' ')}`
 
 function buildMemoMarkdown(raw: string): string {
   const sentences = splitSentences(raw)
-  const title = sentences[0] ? sentences[0].slice(0, 24) : '随手记'
+  const title = sentences[0] ? sentences[0].slice(0, 20) : '随手记'
   const tags = extractTags(raw)
   const time = format(new Date(), 'HH:mm')
-  const bullets = sentences.map((s) => `- ${polish(s)}`).join('\n')
+  // 随手记用自然段落而非列表，更像随手写下的笔记
+  const prose = sentences.map((s) => polish(s)).join('。')
   return `# ${title}
 
-> 小鱼整理于 ${time} ✦
+${prose ? `${prose}。` : '暂无内容'}
 
-${bullets}
+> 🐟 ${time}
 
 ${tags.map((t) => `#${t}`).join(' ')}`
 }

@@ -41,6 +41,8 @@ bash scripts/sync-webapp.sh   # 构建 app/ 并复制产物到 harmony/entry/...
 
 开发时在 `app/` 下跑 `npm run dev` 即可热更新；仅在需要真机/模拟器调试鸿蒙壳时才跑同步脚本。
 
+**重要**：涉及 Web 端的修改完成后，都要运行 `bash scripts/sync-webapp.sh` 同步产物到鸿蒙壳，确保鸿蒙应用加载的是最新代码。
+
 ## 技术栈与关键依赖
 
 **Web 应用**：

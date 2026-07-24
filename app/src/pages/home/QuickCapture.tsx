@@ -141,7 +141,7 @@ export default function QuickCapture() {
       animate={{ y: 0, opacity: 1 }}
       transition={{ delay: 0.32, duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
       className={cn(
-        'col-span-12 rounded-r-xl border bg-surface p-6 transition-shadow duration-200 xl:col-span-8',
+        'col-span-12 flex flex-col rounded-r-xl border bg-surface p-6 transition-shadow duration-200 xl:col-span-8',
         focused ? 'border-ai-500/60 shadow-ai' : 'border-line shadow-card',
       )}
     >
@@ -195,7 +195,7 @@ export default function QuickCapture() {
       </div>
 
       {/* 底栏 */}
-      <div className="mt-2 flex items-center justify-between border-t border-line pt-3">
+      <div className="mt-auto flex items-center justify-between border-t border-line pt-3">
         <div className="flex items-center gap-3">
           <SegmentedControl
             options={[

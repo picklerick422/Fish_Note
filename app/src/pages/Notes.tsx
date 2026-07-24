@@ -203,7 +203,7 @@ export default function Notes() {
 
   /* ---------------- 渲染 ---------------- */
   return (
-    <div className="-mx-8 -my-8 flex h-[calc(100dvh-72px)] w-[calc(100%+64px)] bg-surface">
+    <div className="-mx-8 -mb-8 flex h-[calc(100dvh-72px)] w-[calc(100%+64px)] bg-surface">
       {/* 一、笔记本导航 */}
       <AnimatePresence>
         {!focusMode && (

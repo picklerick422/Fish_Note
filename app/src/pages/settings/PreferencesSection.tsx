@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils'
 import { useSettingsStore } from '@/store/useSettingsStore'
 import { useLocalPrefs, type LocalPrefs } from './localPrefs'
 import { SavedFlash, SettingCard, SettingRow, SgSelect, SgSwitch } from './controls'
+import { triggerThemeRipple } from '@/components/ThemeRipple'
 
 type ThemeMode = LocalPrefs['themeMode']
 
@@ -86,9 +87,14 @@ export default function PreferencesSection() {
     return () => mq.removeEventListener('change', apply)
   }, [prefs.themeMode, setTheme])
 
-  const pickTheme = (mode: ThemeMode) => {
+  const pickTheme = (mode: ThemeMode, e: React.MouseEvent) => {
     updatePrefs((p) => ({ ...p, themeMode: mode }))
-    if (mode !== 'system') setTheme(mode)
+    if (mode !== 'system') {
+      triggerThemeRipple(e.clientX, e.clientY, mode)
+    } else {
+      const mq = window.matchMedia('(prefers-color-scheme: dark)')
+      triggerThemeRipple(e.clientX, e.clientY, mq.matches ? 'dark' : 'light')
+    }
     setSavedTick((t) => t + 1)
   }
 
@@ -125,7 +131,7 @@ export default function PreferencesSection() {
                 <button
                   key={item.mode}
                   type="button"
-                  onClick={() => pickTheme(item.mode)}
+                  onClick={(e) => pickTheme(item.mode, e)}
                   className="group flex flex-col items-center gap-2"
                 >
                   <span
